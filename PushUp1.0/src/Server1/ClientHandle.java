@@ -37,7 +37,9 @@ public class ClientHandle extends Thread {
     public void run() {
         
         try {
+
             ActivityHandler.Handle(socket, this.getId());
+
         } catch (IOException ex) {
             Logger.getLogger(ClientHandle.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
