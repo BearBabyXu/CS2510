@@ -20,13 +20,25 @@ public class ClientRequest implements Serializable {
     private static final long serialVersionUID = -4104838388703400172L;
     private String type;
     private ArrayList<String[]> update = new ArrayList<String[]>();
+    private String targets;
+    private String updates;
 
     public ClientRequest(String type) {
         this.type = type;
     }
 
+    public ClientRequest() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     public String getType() {
         return type;
+    }
+    
+    public boolean addUpdate(String target, String update) {
+        targets = target;
+        updates = update;
+        return true;
     }
 
     public boolean addToCart(int quantity, String ticket) {

@@ -6,6 +6,7 @@
 package Server2;
 
 
+import Request.ClientRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,28 +43,16 @@ public class ClientHandle extends Thread {
             final ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             final ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             
-            System.out.println(in.read());
-            
-            //Communication with client
-            OutputStream clientOutput = null;
-            InputStream clientInput = null;
-            clientInput = socket.getInputStream();
-            clientOutput = socket.getOutputStream();
+            ClientRequest temp=(ClientRequest)in.readObject();
+            System.out.println("Get Message Type:" + temp.getType());
             
             //Communication with peer server
             OutputStream peerOutput=null;
             InputStream peerInput=null;
             peerInput=peerSocket.getInputStream();
-            peerOutput=peerSocket.getOutputStream();            
-            
-            //receive message from client
-            BufferedReader clientbf = new BufferedReader(new InputStreamReader(clientInput));
-            System.out.println(clientbf.readLine());
-            
-            
-            
+            peerOutput=peerSocket.getOutputStream();
+
             socket.close();
-            
             
             //Send request to peer
             PrintWriter peerPW = new PrintWriter(peerOutput);
@@ -74,6 +63,8 @@ public class ClientHandle extends Thread {
               
 
         } catch (IOException ex) {
+            Logger.getLogger(ClientHandle.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(ClientHandle.class.getName()).log(Level.SEVERE, null, ex);
         }
 
