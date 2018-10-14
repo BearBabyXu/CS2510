@@ -12,14 +12,38 @@ public class Activity implements Serializable{
 	private int TimeStamp;  
 	private long requesterID;   // session ID
 	private ClientRequest clientRequest;    // Client request
+        private int type;   //0 read or write, 1 readSkip, 2 readRelease, 3 writeRelease ;
 	
-	public Activity(int time, long requestID, ClientRequest clientRequest) 
+	public Activity(int time, long requestID, ClientRequest clientRequest, int type) 
 	{
 		// initialization constructor
 		this.TimeStamp = time;
 		this.requesterID = requestID;
 		this.clientRequest=clientRequest;
+                
+                
 	}
+        
+        public Activity(int type){
+              this.type=type;
+        }
+        
+        public static Activity createReadSkip(){
+            
+            return new Activity(1);
+        }
+        
+        public static Activity createReadRelease(){
+            return new Activity(2);
+            
+        }
+        
+        public static Activity createWriteRelease(){
+            return new Activity(3);
+        
+        }
+        
+       
 	
 	// get TimeStamp of this Request
 	public long getTimeStamp() 
@@ -40,9 +64,9 @@ public class Activity implements Serializable{
 		return clientRequest;
 	}
         
-        public static Activity RequestConversion(int time, long requestID,ClientRequest request){
+        public static Activity requestConversion(int time, long requestID,ClientRequest request){
             
-            return new Activity(time,requestID ,request);
+            return new Activity(time,requestID ,request,0);
             
         
         }

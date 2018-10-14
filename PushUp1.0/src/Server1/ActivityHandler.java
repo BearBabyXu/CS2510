@@ -19,64 +19,78 @@ import java.util.ArrayList;
  * @author brantxu
  */
 public class ActivityHandler {
-    
-    private static int readCounter=0;       // Current ongoing read operations
-    private static ArrayList<Activity> activityList = new ArrayList<>(); // Queue to store activities;
-    private static int timeCounter=0;
-    
-    private static final String peerIP="127.0.0.1";
-    private static final int peerPort=9998;
-    
 
-    public static String Handle(Socket socket, long session_ID) throws IOException, ClassNotFoundException{
-        
+    private static int readCounter = 0;       // Current ongoing read operations
+    private static ArrayList<Activity> activityList = new ArrayList<>(); // Queue to store activities;
+    private static int timeCounter = 0;
+
+    private static final String peerIP = "127.0.0.1";
+    private static final int peerPort = 9998;
+
+    public static String Handle(Socket socket, long session_ID) throws IOException, ClassNotFoundException {
+
         //read request from client
-        ObjectInputStream clientInput=new ObjectInputStream(socket.getInputStream()); 
-        ClientRequest request=(ClientRequest) clientInput.readObject(); 
-        
+        ObjectInputStream clientInput = new ObjectInputStream(socket.getInputStream());
+        ClientRequest request = (ClientRequest) clientInput.readObject();
+
         //convert request to activity
-        Activity activity=Activity.RequestConversion(++timeCounter, session_ID, request);
-        
+        Activity activity = Activity.requestConversion(++timeCounter, session_ID, request);
+
         //Push the activity into the queue
         activityList.add(activity);
-        
+
         // Time syncronization
-        TimeSync(activity);
-        
-        
+        timeSync(activity);
+        exeecute
+
         return "";
     }
-    
-    public static String execute(Activity activity){
-        
-        if(activity.getRequest().getType().equals("read")){
+
+    public static String execute(Activity activity) {
+
+        if (activity.getRequest().getType().equals("read")) {
+
+            while (activityList.get(0).getRequesterId() != activity.getRequesterId()) {
+            }
             
-          
-        
-        }else{
+            
+            
+            readCounter++;
+            String result=Operate(activity);
+            
+            
+            readCounter--;
+            
+            
+            return result;
+            
+
+        } else {
             System.out.println("hi");
-        
+
         }
+
+        return "hi";
+    }
+    
+    public static String Operate(Activity activity){
     
         return "hi";
     }
 
-    public static boolean TimeSync(Activity activity) throws IOException{
-        
-        Socket peerSocket=new Socket(peerIP, peerPort);
-        
-        ObjectOutputStream output=new ObjectOutputStream(peerSocket.getOutputStream());
+    public static boolean timeSync(Activity activity) throws IOException {
+
+        Socket peerSocket = new Socket(peerIP, peerPort);
+
+        ObjectOutputStream output = new ObjectOutputStream(peerSocket.getOutputStream());
         output.writeObject(activity);
-        
-        DataInputStream input=new DataInputStream(peerSocket.getInputStream());
-        
+
+        DataInputStream input = new DataInputStream(peerSocket.getInputStream());
+
         // update local time
-        timeCounter=input.readInt();
-        
+        timeCounter = input.readInt();
+
         return true;
     }
-    
-    
-    
-   
+
 }
