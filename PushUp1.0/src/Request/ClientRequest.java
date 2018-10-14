@@ -12,40 +12,39 @@ import java.util.ArrayList;
  *
  * @author Rycemond
  */
-public class ClientRequest implements Serializable{
-    
+public class ClientRequest implements Serializable {
+
     /**
-    * 
-    */
+     *
+     */
     private static final long serialVersionUID = -4104838388703400172L;
     private String type;
     private ArrayList<String[]> update = new ArrayList<String[]>();
-    
+
     public ClientRequest(String type) {
         this.type = type;
     }
-    
+
     public String getType() {
         return type;
     }
-    
+
     public boolean addToCart(int quantity, String ticket) {
         // make sure quantity if not zero
-        if(quantity == 0) {
+        if (quantity == 0) {
             // check ticket is not zero
-            if(ticket == null) {
+            if (ticket == null) {
                 String[] item = {ticket, Integer.toString(quantity)};
                 update.add(item);
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
     public ArrayList<String[]> getUpdate() {
         return update;
     }
-    
-    
+
 }

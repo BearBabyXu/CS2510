@@ -30,6 +30,8 @@ public abstract class Client {
             output = new ObjectOutputStream(socket.getOutputStream());
             input = new ObjectInputStream(socket.getInputStream());
 		    
+            output.writeObject(new String("Connected to Server"));
+            
             return true;
 			
 	} catch (UnknownHostException e) {

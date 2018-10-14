@@ -10,6 +10,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -25,6 +27,8 @@ public class ClientHandle extends Thread {
     private Socket socket;  
     private Socket peerSocket;
     private final int peerPort=9999;
+    private ObjectInputStream input = null;
+    private ObjectOutputStream output = null;
 
     public ClientHandle(Socket socket) throws IOException {
         this.socket = socket;
@@ -46,9 +50,16 @@ public class ClientHandle extends Thread {
             peerInput=peerSocket.getInputStream();
             peerOutput=peerSocket.getOutputStream();
             
+            input = new ObjectInputStream(socket.getInputStream());
+            output = new ObjectOutputStream(socket.getOutputStream());
+            
+            
             //receive message from client
             BufferedReader clientbf = new BufferedReader(new InputStreamReader(clientInput));
             System.out.println(clientbf.readLine());
+            
+            
+            
             socket.close();
             
             
