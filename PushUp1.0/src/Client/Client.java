@@ -44,23 +44,4 @@ public abstract class Client {
 	
         return false;
     }
-    
-    public boolean isConnected() {
-        if(socket == null || !socket.isConnected()) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-    
-    public void disconnect() {
-        if (isConnected()) {
-            try {
-                System.out.println("Client attempted to disconnect.");
-                socket.close();
-            } catch (IOException ex) {
-                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
 }
