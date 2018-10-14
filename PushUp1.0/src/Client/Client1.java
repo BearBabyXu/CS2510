@@ -15,7 +15,7 @@ public class Client1 extends Client implements ClientInterface {
 
     public boolean WriteRequest(int quantity, String ticket) {
         ClientRequest request = new ClientRequest("write");
-        request.addToCart(quantity, ticket);
+        request.addUpdate(Integer.toString(quantity), ticket);
 
         return Send(request);
     }
