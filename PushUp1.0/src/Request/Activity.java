@@ -9,19 +9,16 @@ public class Activity implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = -2193091130641718696L;
-	private int TimeStamp;
-	private String requesterID;
-	private String type;
-	private String msg;
-	private ClientRequest clientRequest;
+	private int TimeStamp;  
+	private long requesterID;   // session ID
+	private ClientRequest clientRequest;    // Client request
 	
-	public Activity(int time, String type, String msg, String id) 
+	public Activity(int time, long requestID, ClientRequest clientRequest) 
 	{
 		// initialization constructor
 		this.TimeStamp = time;
-		this.requesterID = id;
-		this.type = type;
-		this.msg = msg;
+		this.requesterID = requestID;
+		this.clientRequest=clientRequest;
 	}
 	
 	// get TimeStamp of this Request
@@ -31,28 +28,24 @@ public class Activity implements Serializable{
 	}
 	
 	// get Requester ID
-	public String getRequesterId()
+	public long getRequesterId()
 	{
 		return requesterID;
 	}
+
+
 	
-	// get type of this Request
-	public String getType()
-	{
-		return type;
-	}
-	
-	// get Message of this Request
-	public String getMessage() {
-		return msg;
-	}
-	
-	// get attached object content
-	public ClientRequest getObjContent() {
+	// get attached request content
+	public ClientRequest getRequest() {
 		return clientRequest;
 	}
         
+        public static Activity RequestConversion(int time, long requestID,ClientRequest request){
+            
+            return new Activity(time,requestID ,request);
+            
         
+        }
 	
 	
 
