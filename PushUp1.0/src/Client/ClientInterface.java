@@ -1,3 +1,6 @@
+package Client;
+
+import Request.Request;
 
 public interface ClientInterface {
 	

@@ -1,11 +1,21 @@
+package Server;
 
-public abstract class ServerAbs {
+
+import Request.Request;
+
+
+public abstract class Server {
 	
 	private final String ServerID;
         private int Time;
+        protected int port;
+	public String name;
+	abstract void start();
 	
-	public ServerAbs(String id) {
-		ServerID = id;
+	public Server(int _SERVER_PORT, String _serverName, String id) {
+		port = _SERVER_PORT;
+		name = _serverName; 
+                ServerID = id;
 	}
         
         public boolean SendRequest() {
@@ -37,6 +47,14 @@ public abstract class ServerAbs {
             
             return false;
         }
+        
+        public int getPort() {
+		return port;
+	}
+	
+	public String getName() {
+		return name;
+	}
         
         private void TimeSyncronized(int time) {
             
