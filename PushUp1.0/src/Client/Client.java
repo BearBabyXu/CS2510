@@ -5,7 +5,7 @@
  */
 package Client;
 
-import Request.Activity;
+import Request.Request;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

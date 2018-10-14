@@ -6,7 +6,7 @@
 package Client;
 
 import Request.ClientRequest;
-import Request.Activity;
+import Request.Request;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;

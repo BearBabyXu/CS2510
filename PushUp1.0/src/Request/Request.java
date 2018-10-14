@@ -3,7 +3,7 @@ package Request;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Activity implements Serializable{
+public class Request implements Serializable{
 
 	/**
 	 * 
@@ -13,9 +13,9 @@ public class Activity implements Serializable{
 	private String requesterID;
 	private String type;
 	private String msg;
-	private ClientRequest clientRequest;
+	private ArrayList<Object> objContents = new ArrayList<Object>();
 	
-	public Activity(int time, String type, String msg, String id) 
+	public Request(int time, String type, String msg, String id) 
 	{
 		// initialization constructor
 		this.TimeStamp = time;
@@ -48,8 +48,8 @@ public class Activity implements Serializable{
 	}
 	
 	// get attached object content
-	public ClientRequest getObjContent() {
-		return clientRequest;
+	public ArrayList<Object> getObjContent() {
+		return objContents;
 	}
         
         
