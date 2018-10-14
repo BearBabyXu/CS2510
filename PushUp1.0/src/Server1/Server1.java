@@ -11,4 +11,9 @@ package Server1;
  */
 public class Server1 {
     
+    public static void main(String[] args) {
+       
+       new ClientServer().start();
+       new PeerServer().start();
+    }
 }

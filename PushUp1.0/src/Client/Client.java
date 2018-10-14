@@ -9,6 +9,9 @@ package Client;
  *
  * @author brantxu
  */
-public class Client {
+public class Client implements ClientInterface{
+    
+    
+    
     
 }
