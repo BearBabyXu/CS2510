@@ -37,7 +37,8 @@ public class ClientHandle extends Thread {
     }
 
     public void run() {
-        try {
+        try {   
+            System.out.println("Server2 Ready!");
             final ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             final ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             
@@ -53,11 +54,7 @@ public class ClientHandle extends Thread {
             OutputStream peerOutput=null;
             InputStream peerInput=null;
             peerInput=peerSocket.getInputStream();
-            peerOutput=peerSocket.getOutputStream();
-            
-            input = new ObjectInputStream(socket.getInputStream());
-            output = new ObjectOutputStream(socket.getOutputStream());
-            
+            peerOutput=peerSocket.getOutputStream();            
             
             //receive message from client
             BufferedReader clientbf = new BufferedReader(new InputStreamReader(clientInput));

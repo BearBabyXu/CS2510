@@ -35,7 +35,7 @@ public class ClientHandle extends Thread {
 
     public void run() {
         try {
-           
+            System.out.println("Server1 Ready!");
             final ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             final ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             
