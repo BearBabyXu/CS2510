@@ -22,6 +22,7 @@ public class ClientServer extends Thread {
     public void run() {
 
         try {
+            
             ServerSocket serverSocket = new ServerSocket(clientPort);
             
             while (true) {

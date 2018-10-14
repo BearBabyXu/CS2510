@@ -38,6 +38,11 @@ public class ClientHandle extends Thread {
 
     public void run() {
         try {
+            final ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+            final ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+            
+            System.out.println(in.read());
+            
             //Communication with client
             OutputStream clientOutput = null;
             InputStream clientInput = null;
