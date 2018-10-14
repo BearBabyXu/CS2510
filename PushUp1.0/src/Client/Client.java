@@ -9,6 +9,7 @@ import Request.Request;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
@@ -26,9 +27,14 @@ public abstract class Client {
 	try {
             socket = new Socket(server, port);
             System.out.println("Connected to " + server + " on port " + port);
-			
+            
+            //PrintWriter pw=new PrintWriter(socket.getOutputStream());
+            //pw.write("to8889");
+            //pw.flush();
             output = new ObjectOutputStream(socket.getOutputStream());
             input = new ObjectInputStream(socket.getInputStream());
+            
+            output.writeObject("Get Message?");
 		    
             return true;
 			

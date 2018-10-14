@@ -10,6 +10,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -34,6 +36,11 @@ public class ClientHandle extends Thread {
 
     public void run() {
         try {
+            final ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+            final ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+            
+            System.out.println(in.read());
+            
             //Communication with client
             OutputStream clientOutput = null;
             InputStream clientInput = null;

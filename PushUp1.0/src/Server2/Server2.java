@@ -11,7 +11,7 @@ package Server2;
  */
 public class Server2 {
     public static void main(String[] args) {
-       new Server1.ClientServer().start();
-       new Server1.PeerServer().start();
+       new ClientServer().start();
+       new PeerServer().start();
     }
 }
