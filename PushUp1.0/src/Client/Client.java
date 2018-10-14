@@ -36,6 +36,8 @@ public abstract class Client {
             
             output.writeObject("Get Message?");
 		    
+            output.writeObject(new String("Connected to Server"));
+            
             return true;
 			
 	} catch (UnknownHostException e) {

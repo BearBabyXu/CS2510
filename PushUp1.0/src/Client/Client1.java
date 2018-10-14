@@ -16,14 +16,13 @@ public class Client1 extends Client implements ClientInterface {
     public boolean WriteRequest(int quantity, String ticket) {
         ClientRequest request = new ClientRequest("write");
         request.addToCart(quantity, ticket);
-        
+
         return Send(request);
     }
 
-    
     public boolean ReadRequest() {
         ClientRequest request = new ClientRequest("read");
-        
+
         return Send(request);
     }
 
@@ -34,9 +33,8 @@ public class Client1 extends Client implements ClientInterface {
         } catch (IOException ex) {
             Logger.getLogger(Client1.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return false;
     }
-    
-    
+
 }
