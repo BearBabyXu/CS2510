@@ -1,7 +1,7 @@
 package Server;
 
 
-import Request.Request;
+import Request.Activity;
 
 
 public abstract class Server {
@@ -19,31 +19,31 @@ public abstract class Server {
 	}
         
         public boolean SendRequest() {
-            Request req;
+            Activity req;
             String type;
             
             type = "request";
-            req = new Request(Time+1, type, "msg", this.ServerID);
+            req = new Activity(Time+1, type, "msg", this.ServerID);
             
             return false;
         }
         
         public boolean SendResponse() {
-            Request req;
+            Activity req;
             String type;
             
             type = "response";
-            req = new Request(Time+1, type, "msg", this.ServerID);
+            req = new Activity(Time+1, type, "msg", this.ServerID);
             
             return false;
         }
         
         public boolean SendRelease() {
-            Request req;
+            Activity req;
             String type;
             
             type = "release";
-            req = new Request(Time+1, type, null, this.ServerID);
+            req = new Activity(Time+1, type, null, this.ServerID);
             
             return false;
         }
