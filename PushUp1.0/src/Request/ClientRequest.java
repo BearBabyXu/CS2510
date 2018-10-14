@@ -30,7 +30,7 @@ public class ClientRequest implements Serializable {
     public ClientRequest(String type, String target) {
         this.type = type;
         this.target = target;
-
+        this.update = null;
     }
 
     public String getType() {

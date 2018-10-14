@@ -40,9 +40,12 @@ public class ClientHandle extends Thread {
             final ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             final ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             
-            ClientRequest temp=(ClientRequest)in.readObject();
-            System.out.println("Get Message Type:" + temp.getType());
-            
+            do {
+                ClientRequest temp=(ClientRequest)in.readObject();
+                System.out.println("Get Message Type:" + temp.getType());
+                
+            } while(false);
+            /*
             //Communication with peer server
             OutputStream peerOutput=null;
             InputStream peerInput=null;
@@ -57,7 +60,7 @@ public class ClientHandle extends Thread {
             peerPW.flush();
             peerSocket.close();
 
-              
+             */
 
         } catch (IOException ex) {
             Logger.getLogger(ClientHandle.class.getName()).log(Level.SEVERE, null, ex);
