@@ -8,10 +8,6 @@ package Request;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-/**
- *
- * @author Rycemond
- */
 public class ClientRequest implements Serializable {
 
     /**
@@ -25,10 +21,6 @@ public class ClientRequest implements Serializable {
 
     public ClientRequest(String read) {
         this.type = type;
-    }
-
-    public ClientRequest() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public String getType() {

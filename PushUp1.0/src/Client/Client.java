@@ -12,6 +12,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class Client {
     
@@ -29,10 +31,6 @@ public abstract class Client {
             output = new ObjectOutputStream(socket.getOutputStream());
             input = new ObjectInputStream(socket.getInputStream());
             
-            ClientRequest req;
-            req = new ClientRequest("write");
-            output.writeObject(req);
-            
             return true;
 			
 	} catch (UnknownHostException e) {
@@ -46,5 +44,17 @@ public abstract class Client {
 	}
 	
         return false;
+    }
+    
+    public void disconnect() {
+        try {
+            output.close();
+            input.close();
+            socket.close();
+            System.out.println("Disconnected with server");
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
 }

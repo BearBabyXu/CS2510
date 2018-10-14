@@ -28,8 +28,6 @@ public class ClientHandle extends Thread {
     private Socket socket;  
     private Socket peerSocket;
     private final int peerPort=9999;
-    private ObjectInputStream input = null;
-    private ObjectOutputStream output = null;
 
     public ClientHandle(Socket socket) throws IOException {
         this.socket = socket;
@@ -43,8 +41,7 @@ public class ClientHandle extends Thread {
             final ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             final ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             
-            ClientRequest temp=(ClientRequest)in.readObject();
-            System.out.println("Get Message Type:" + temp.getType());
+            System.out.println((String)in.readObject());
             
             //Communication with peer server
             OutputStream peerOutput=null;

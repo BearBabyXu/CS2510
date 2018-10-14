@@ -13,15 +13,16 @@ import java.util.logging.Logger;
 
 public class Client1 extends Client implements ClientInterface {
 
-    public boolean WriteRequest(int quantity, String ticket) {
+    public boolean SendWriteRequest(String target, int quantity) {
         ClientRequest request = new ClientRequest("write");
-        request.addUpdate(Integer.toString(quantity), ticket);
+        request.addUpdate(Integer.toString(quantity), target);
 
         return Send(request);
     }
 
-    public boolean ReadRequest() {
+    public boolean SendReadRequest(String target) {
         ClientRequest request = new ClientRequest("read");
+        request.addUpdate(null, target);
 
         return Send(request);
     }

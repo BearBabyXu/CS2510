@@ -11,7 +11,7 @@ public interface ClientInterface {
      * @param update data content
      * @return finished Request object
      */
-    public boolean WriteRequest(int quantity, String ticket);
+    public boolean SendWriteRequest(String target, int quantity);
 
     /**
      *
@@ -20,7 +20,7 @@ public interface ClientInterface {
      * @param update data content
      * @return finished Request object
      */
-    public boolean ReadRequest();
+    public boolean SendReadRequest(String target);
 
     public boolean Send(ClientRequest request);
 }
