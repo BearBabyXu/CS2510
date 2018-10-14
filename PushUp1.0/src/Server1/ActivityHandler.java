@@ -41,12 +41,12 @@ public class ActivityHandler {
 
         // Time syncronization
         timeSync(activity);
-        exeecute
+        return execute(activity);
 
-        return "";
+       
     }
 
-    public static String execute(Activity activity) {
+    public static String execute(Activity activity) throws IOException {
 
         if (activity.getRequest().getType().equals("read")) {
 
@@ -56,29 +56,36 @@ public class ActivityHandler {
             
             
             readCounter++;
-            String result=Operate(activity);
-            
-            
+            sendReadSkip();
+            String result=Operate(activity); 
+            sendReadRelease();
             readCounter--;
-            
             
             return result;
             
 
         } else {
-            System.out.println("hi");
+            while (activityList.get(0).getRequesterId() != activity.getRequesterId() || readCounter!=0) {
+            }
+            
+            String result=Operate(activity);
+            sendWriteRelease();
+            
+            return result;
+            
+            
 
         }
 
-        return "hi";
+        
     }
     
-    public static String Operate(Activity activity){
+    private static String Operate(Activity activity){
     
         return "hi";
     }
-
-    public static boolean timeSync(Activity activity) throws IOException {
+   
+    private static boolean timeSync(Activity activity) throws IOException {
 
         Socket peerSocket = new Socket(peerIP, peerPort);
 
@@ -89,7 +96,34 @@ public class ActivityHandler {
 
         // update local time
         timeCounter = input.readInt();
-
+        peerSocket.close();
+        return true;
+    }
+    
+    private static boolean sendReadSkip() throws IOException{
+        Socket peerSocket = new Socket(peerIP, peerPort);
+        ObjectOutputStream output = new ObjectOutputStream(peerSocket.getOutputStream());
+        output.writeObject(Activity.createReadSkip());
+        peerSocket.close();
+        
+        return true;
+    }
+    
+     private static boolean sendReadRelease() throws IOException{
+        Socket peerSocket = new Socket(peerIP, peerPort);
+        ObjectOutputStream output = new ObjectOutputStream(peerSocket.getOutputStream());
+        output.writeObject(Activity.createReadRelease());
+        peerSocket.close();
+        
+        return true;
+    }
+     
+     private static boolean sendWriteRelease() throws IOException{
+        Socket peerSocket = new Socket(peerIP, peerPort);
+        ObjectOutputStream output = new ObjectOutputStream(peerSocket.getOutputStream());
+        output.writeObject(Activity.createWriteRelease());
+        peerSocket.close();
+        
         return true;
     }
 

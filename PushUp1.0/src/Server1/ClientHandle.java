@@ -35,35 +35,15 @@ public class ClientHandle extends Thread {
     }
 
     public void run() {
+        
         try {
-            System.out.println("Server1 Ready!");
-            final ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-            final ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-            
-            ClientRequest temp=(ClientRequest)in.readObject();
-            System.out.println("Get Message Type:" + temp.getType());
-            
-            //Communication with peer server
-            OutputStream peerOutput=null;
-            InputStream peerInput=null;
-            peerInput=peerSocket.getInputStream();
-            peerOutput=peerSocket.getOutputStream();
-
-            socket.close();
-            
-            //Send request to peer
-            PrintWriter peerPW = new PrintWriter(peerOutput);
-            peerPW.println("Message From Server1");
-            peerPW.flush();
-            peerSocket.close();
-
-              
-
+            ActivityHandler.Handle(socket, this.getId());
         } catch (IOException ex) {
             Logger.getLogger(ClientHandle.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(ClientHandle.class.getName()).log(Level.SEVERE, null, ex);
         }
+     
 
     }
 }
