@@ -21,7 +21,7 @@ public class ClientRequest implements Serializable {
     private String type;
     private ArrayList<String[]> update = new ArrayList<String[]>();
 
-    public ClientRequest(String type) {
+    public ClientRequest(String read) {
         this.type = type;
     }
 
