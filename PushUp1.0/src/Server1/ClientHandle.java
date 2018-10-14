@@ -39,7 +39,9 @@ public class ClientHandle extends Thread {
             final ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             final ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             
-            System.out.println(in.read());
+            String temp=(String) in.readObject();
+            
+            System.out.println(temp);
             
             //Communication with client
             OutputStream clientOutput = null;
@@ -54,10 +56,10 @@ public class ClientHandle extends Thread {
             peerOutput=peerSocket.getOutputStream();
             
             //receive message from client
-            
-            BufferedReader clientbf = new BufferedReader(new InputStreamReader(clientInput));
-             
-            System.out.println(clientbf.readLine());
+//            
+//            BufferedReader clientbf = new BufferedReader(new InputStreamReader(clientInput));
+//             
+//            System.out.println(clientbf.readLine());
 
             socket.close();
             
@@ -71,6 +73,8 @@ public class ClientHandle extends Thread {
               
 
         } catch (IOException ex) {
+            Logger.getLogger(ClientHandle.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(ClientHandle.class.getName()).log(Level.SEVERE, null, ex);
         }
 

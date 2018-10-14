@@ -7,7 +7,7 @@ package Client;
 
 public class RunClient {
     
-    private final static int port = 8889;
+    private final static int port = 8888;
     
     public static void main(String args[]) {
         
