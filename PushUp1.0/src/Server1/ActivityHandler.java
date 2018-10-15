@@ -73,10 +73,14 @@ public class ActivityHandler {
 
         //read request from client
         ObjectInputStream clientInput = new ObjectInputStream(socket.getInputStream());
+<<<<<<< HEAD
         
        
         ClientRequest request = (ClientRequest) clientInput.readObject();
         
+=======
+        ClientRequest request = (ClientRequest) clientInput.readObject();
+>>>>>>> parent of 21c82b0... 2.0
 
         //convert request to activity
         Activity activity = Activity.requestConversion(++timeCounter, session_ID, request);
@@ -129,7 +133,11 @@ public class ActivityHandler {
         String type = activity.getRequest().getType();
         String target = activity.getRequest().getTarget();
         String update = activity.getRequest().getUpdate();
+<<<<<<< HEAD
 
+=======
+                
+>>>>>>> parent of 21c82b0... 2.0
 
         try {
             fis = new FileInputStream("data.txt");
@@ -158,7 +166,10 @@ public class ActivityHandler {
                     return updated;
                 }
             }
+<<<<<<< HEAD
 
+=======
+>>>>>>> parent of 21c82b0... 2.0
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
