@@ -9,14 +9,17 @@ package Server2;
 import Request.Activity;
 import Request.ClientRequest;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -125,48 +128,44 @@ public class ActivityHandler {
         FileInputStream fis = null;
         FileOutputStream fout = null;
         BufferedReader reader = null;
+        BufferedWriter writer = null;
         
         String type = activity.getRequest().getType();
         String target = activity.getRequest().getTarget();
         String update = activity.getRequest().getUpdate();
 
+        
+        int result = 0;
+        int sum = 0;
+        
         try {
-            fis = new FileInputStream("data.txt");
+            fis = new FileInputStream("shareFile.txt");
             reader = new BufferedReader(new InputStreamReader(fis));
-            List<String> data = new ArrayList();
-            String line = "";
-            while ((line = reader.readLine()) != null) {
-                data.add(line);
-            //   System.out.println(line);
-            }
-            
-            // read data from file
+            sum = Integer.parseInt(reader.readLine());
             fis.close();
             
-            for(int i = 0; i < data.size(); i++) {
-                // find target
-                if (data.get(i).substring(0, 1).equals(target)) {
-                    
-                   // System.out.println(data.get(i).substring(0, 1));
-                    
-                    
-                    int oldValue = Integer.parseInt(data.get(i).substring(3));
-                   // System.out.println("old" + Integer.toString(oldValue));
-                    // data update
-                    //String updated = target + ", " + Integer.toString(oldValue - Integer.parseInt(update));
-                    //System.out.println(target + "ss");
-                    //data.set(i, updated);
-                    
-                    //System.out.println("Update:"+updated);
-                    return data.get(i);
-                }
+            if (type.equals("Write")) {
+                fout = new FileOutputStream("shareFile.txt");
+                writer = new BufferedWriter(new OutputStreamWriter(fout));
+                sum += Integer.parseInt(update);
+                fout.write(sum);
+                fout.flush();
+                fout.close();
+                System.out.println("Sum: " + sum);
+            } else {
+                // Read sum
+                System.out.println("Sum: " + sum);
+                return String.valueOf(sum);
             }
-
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
+                         
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Server1.ActivityHandler.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Server1.ActivityHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        return null;
+        
+        return String.valueOf(sum);
+        
     }
 
     private static boolean timeSync(Activity activity) throws IOException {

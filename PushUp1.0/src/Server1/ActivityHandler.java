@@ -11,8 +11,12 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
@@ -115,7 +119,7 @@ public class ActivityHandler {
             while (activityList.get(0).getRequesterId() != activity.getRequesterId() || readCounter != 0) {
             }
             
-            Thread.sleep(10000);
+            Thread.sleep(5000);
             String result = Operate(activity);
             sendWriteRelease();
 
@@ -134,59 +138,50 @@ public class ActivityHandler {
         String type = activity.getRequest().getType();
         String target = activity.getRequest().getTarget();
         String update = activity.getRequest().getUpdate();
-
+        int time = activity.getTimeStamp();
+        
+        String result = "";
+        int sum = 0;
+        
         try {
-            fis = new FileInputStream("data.txt");
-            reader = new BufferedReader(new InputStreamReader(fis));
-            List<String> data = new ArrayList();
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream("shareFile.txt")));
+            StringBuffer sb = new StringBuffer();
+            
+            //read each line
             String line = "";
-            while ((line = reader.readLine()) != null) {
-                data.add(line);
-            //   System.out.println(line);
+            while((line = reader.readLine())!= null) {
+                sum = Integer.parseInt(line);
+                sb.append(line + "\n");
             }
             
-            // read data from file
-            fis.close();
+            reader.close();
             
-            int targetIndex = -1;
-            for(int i = 0; i < data.size(); i++) {
-                // find target
-                if (data.get(i).substring(0, 1).equals(target)) {
-                    // get target index
-                    targetIndex = i;
-                }
-            }
-            
-            if(type.equals("Read")) {
-                // return target data
-                return data.get(targetIndex);          
-            } else if (type.equals("Write")) {
-                // update updatdata
-                fout = new FileOutputStream("data.txt");
-                writer = new BufferedWriter(new OutputStreamWriter(fout));
-                for(int i = 0; i < data.size(); i++) {
-                    if(i == targetIndex) {
-                        int oldVal = Integer.parseInt(data.get(targetIndex).substring(3));
-                        int newVal = Integer.parseInt(update);
-                        writer.write(target + ", " + String.valueOf(oldVal-newVal) + "\n" );
-                    } else {
-                        writer.write(data.get(i) + "\n");
-                    }
-                }
+            if (type.equals("Write")) {
+                System.out.printf("Write (oldVal: %d, addVal: %d) \n", sum, Integer.parseInt(update));
+                sum += Integer.parseInt(update);
+                sb.append(sum + "\n");
                 
+                System.out.println("New Sum: " + sum);
+                fout = new FileOutputStream("shareFile.txt");
+                writer = new BufferedWriter(new OutputStreamWriter(fout));
+                writer.write(sb.toString());
                 writer.flush();
                 fout.close();
-                System.out.println("Close File");
-                return "done";
+                
             } else {
-                System.err.println("Not defined request type");
+                // Read sum
+                return String.valueOf(sum);
             }
+                
             
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ActivityHandler.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ActivityHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        return null;
+        
+        System.out.println("Update End");
+        return String.valueOf(sum);
     }
 
     private static boolean timeSync(Activity activity) throws IOException {
