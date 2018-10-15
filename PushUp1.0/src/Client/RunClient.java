@@ -57,7 +57,7 @@ public class RunClient {
                 BufferedReader br=new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 System.out.println(br.readLine());
                 
-
+                System.out.println("new");
                 /*
                 input = new ObjectInputStream(socket.getInputStream());
                 // wait for request
