@@ -26,13 +26,10 @@ import java.util.logging.Logger;
 public class ClientHandle extends Thread {
 
     private Socket socket;
-    private Socket peerSocket;
-    private final int peerPort = 9998;
-
+    
     public ClientHandle(Socket socket) throws IOException {
         this.socket = socket;
-        peerSocket = new Socket("127.0.0.1", peerPort);
-
+        
     }
 
     public void run() {

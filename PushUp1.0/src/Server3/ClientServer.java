@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Server2;
+package Server3;
 
 
 import java.io.IOException;
@@ -15,17 +15,18 @@ import java.util.logging.Logger;
  *
  * @author brantxu
  */
-public class PeerServer extends Thread {
-    
-    private final int peerPort = 9998;
+public class ClientServer extends Thread {
+
+    private final int clientPort = 8889;
 
     public void run() {
-        
-        try {
             
-            ServerSocket serverSocket = new ServerSocket(peerPort);
+        try {
+            ServerSocket serverSocket = new ServerSocket(clientPort);
+            
             while (true) {
-                new PeerHandle(serverSocket.accept()).start();
+                
+                new ClientHandle(serverSocket.accept()).start();
             }
         } catch (IOException ex) {
             Logger.getLogger(ClientServer.class.getName()).log(Level.SEVERE, null, ex);

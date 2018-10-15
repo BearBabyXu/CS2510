@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Server2;
+package Server3;
 
 
 import java.io.IOException;
@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  */
 public class PeerServer extends Thread {
     
-    private final int peerPort = 9998;
+    private final int peerPort = 9999;
 
     public void run() {
         

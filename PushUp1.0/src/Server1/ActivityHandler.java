@@ -36,7 +36,7 @@ public class ActivityHandler {
     private static int timeCounter = 0;
 
     private static final String peerIP = "127.0.0.1";
-    private static final int peerPort = 9999;
+    private static final int[] peerPort = {9998,9999};
     
     
     public static boolean PHandle(Socket socket) throws IOException, ClassNotFoundException{
@@ -208,8 +208,8 @@ public class ActivityHandler {
     }
 
     private static boolean timeSync(Activity activity) throws IOException {
-
-        Socket peerSocket = new Socket(peerIP, peerPort);
+        for(int i=0;i<peerPort.length;i++){
+        Socket peerSocket = new Socket(peerIP, peerPort[i]);
 
         ObjectOutputStream output = new ObjectOutputStream(peerSocket.getOutputStream());
         output.writeObject(activity);
@@ -229,35 +229,38 @@ public class ActivityHandler {
         System.out.println(e.getInfo());
         }
         
-        
+        }
         
         return true;
     }
 
     private static boolean sendReadSkip() throws IOException {
-        Socket peerSocket = new Socket(peerIP, peerPort);
+        for(int i=0;i<peerPort.length;i++){
+        Socket peerSocket = new Socket(peerIP, peerPort[i]);
         ObjectOutputStream output = new ObjectOutputStream(peerSocket.getOutputStream());
         output.writeObject(Activity.createReadSkip());
         peerSocket.close();
-
+        }
         return true;
     }
 
     private static boolean sendReadRelease() throws IOException {
-        Socket peerSocket = new Socket(peerIP, peerPort);
+        for(int i=0;i<peerPort.length;i++){
+        Socket peerSocket = new Socket(peerIP, peerPort[i]);
         ObjectOutputStream output = new ObjectOutputStream(peerSocket.getOutputStream());
         output.writeObject(Activity.createReadRelease());
         peerSocket.close();
-
+        }
         return true;
     }
 
     private static boolean sendWriteRelease() throws IOException {
-        Socket peerSocket = new Socket(peerIP, peerPort);
+        for(int i=0;i<peerPort.length;i++){
+        Socket peerSocket = new Socket(peerIP, peerPort[i]);
         ObjectOutputStream output = new ObjectOutputStream(peerSocket.getOutputStream());
         output.writeObject(Activity.createWriteRelease());
         peerSocket.close();
-
+        }
         return true;
     }
 

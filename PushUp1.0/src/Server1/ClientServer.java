@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  */
 public class ClientServer extends Thread {
 
-    private final int clientPort = 8888;
+    private final int clientPort = 8887;
 
     public void run() {
             

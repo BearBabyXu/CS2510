@@ -3,7 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Server2;
+package Server3;
+
 
 
 import Request.Activity;
@@ -37,7 +38,7 @@ public class ActivityHandler {
     private static int timeCounter = 0;
 
     private static final String peerIP = "127.0.0.1";
-    private static final int[] peerPort = {9997,9999};
+    private static final int[] peerPort = {9997,9998};
     
     
     public static boolean PHandle(Socket socket) throws IOException, ClassNotFoundException{
