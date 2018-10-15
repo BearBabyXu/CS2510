@@ -129,7 +129,6 @@ public class ActivityHandler {
         String target = activity.getRequest().getTarget();
         String update = activity.getRequest().getUpdate();
 
-
         try {
             fis = new FileInputStream("data.txt");
             reader = new BufferedReader(new InputStreamReader(fis));
@@ -139,22 +138,26 @@ public class ActivityHandler {
                 data.add(line);
                // System.out.println(line);
             }
-
+            
+            // read data from file
             fis.close();
-
-            for (String each : data) {
-                // If target line is found
-                if (each.substring(0, 1).equals(target)) {
-                    // get target index
-                    int index = data.indexOf(each);
-                    // get old value of index
-                    int oldValue = Integer.parseInt(each.substring(3));
-
-                    // data update
-                    String updated = target + ", " + Integer.toString(oldValue - Integer.parseInt(update));
-                    data.set(index, updated);
+            
+            for(int i = 0; i < data.size(); i++) {
+                // find target
+                if (data.get(i).substring(0, 1).equals(target)) {
                     
-                    return updated;
+                    System.out.println(data.get(i).substring(0, 1));
+                    
+                    
+                    int oldValue = Integer.parseInt(data.get(i).substring(3));
+                    System.out.println("old" + Integer.toString(oldValue));
+                    // data update
+                    //String updated = target + ", " + Integer.toString(oldValue - Integer.parseInt(update));
+                    //System.out.println(target + "ss");
+                    //data.set(i, updated);
+                    
+                    //System.out.println("Update:"+updated);
+                    return data.get(i);
                 }
             }
 
