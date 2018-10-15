@@ -6,7 +6,16 @@
 package Client;
 
 import Request.ClientRequest;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,7 +40,7 @@ public class RunClient {
                 int count = 1;
                 do {
                     // write request
-                    request = new ClientRequest("write", "A", "1");
+                    request = new ClientRequest("Read", "A", null);
                     client.output.writeObject(request);
                     
                     // wait for request
@@ -53,6 +62,7 @@ public class RunClient {
         } else {
             System.err.println("Fail to connect with server.");
         }
+        
 
     }
 
