@@ -73,15 +73,10 @@ public class ActivityHandler {
 
         //read request from client
         ObjectInputStream clientInput = new ObjectInputStream(socket.getInputStream());
-<<<<<<< HEAD
 
         ClientRequest request = (ClientRequest) clientInput.readObject();
 
 
-=======
-        ClientRequest request = (ClientRequest) clientInput.readObject();
-
->>>>>>> parent of 21c82b0... 2.0
         //convert request to activity
         Activity activity = Activity.requestConversion(++timeCounter, session_ID, request);
 
@@ -106,7 +101,7 @@ public class ActivityHandler {
             activityList.remove(0);
             sendReadSkip();
             String result = Operate(activity);
-            Thread.sleep(50000);
+            
             sendReadRelease();
             readCounter--;
 
@@ -133,10 +128,6 @@ public class ActivityHandler {
         String type = activity.getRequest().getType();
         String target = activity.getRequest().getTarget();
         String update = activity.getRequest().getUpdate();
-<<<<<<< HEAD
-=======
-                
->>>>>>> parent of 21c82b0... 2.0
 
         try {
             fis = new FileInputStream("data.txt");
@@ -145,9 +136,8 @@ public class ActivityHandler {
             String line = "";
             while ((line = reader.readLine()) != null) {
                 data.add(line);
-               // System.out.println(line);
+                System.out.println(line);
             }
-<<<<<<< HEAD
             
             // read data from file
             fis.close();
@@ -170,27 +160,6 @@ public class ActivityHandler {
                     return data.get(i);
                 }
             }
-
-=======
-
-            fis.close();
-
-            for (String each : data) {
-                // If target line is found
-                if (each.substring(0, 1).equals(target)) {
-                    // get target index
-                    int index = data.indexOf(each);
-                    // get old value of index
-                    int oldValue = Integer.parseInt(each.substring(3));
-
-                    // data update
-                    String updated = target + ", " + Integer.toString(oldValue - Integer.parseInt(update));
-                    data.set(index, updated);
-                    
-                    return updated;
-                }
-            }
->>>>>>> parent of 21c82b0... 2.0
 
         } catch (Exception e) {
             System.err.println(e.getMessage());

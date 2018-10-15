@@ -39,6 +39,7 @@ public class RunClient {
         // If return true then continue 
         try {
             socket = new Socket("127.0.0.1", port);
+            System.out.println("connect to server");
             
             // wait until server send response
             String response = null;
@@ -49,15 +50,22 @@ public class RunClient {
                 request = new ClientRequest("Read", "A", null);
                 output = new ObjectOutputStream(socket.getOutputStream());
                 output.writeObject(request);
-
+                
+                
+                System.out.println("Wait for reply");
                 // wait for request
-                input = new ObjectInputStream(socket.getInputStream());
+                BufferedReader bw=new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                System.out.println(bw.readLine());
+                /*
+               input = new ObjectInputStream(socket.getInputStream());
                 response = (String)input.readObject();
                 if (response == null) {
                     System.out.println("Get null response from server");
                 } else {
                     System.out.println(response);
                 }
+                */
+                
             } while (!(read.next() == ""));
 
         } catch (Exception e) {
