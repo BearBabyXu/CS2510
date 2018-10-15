@@ -73,8 +73,7 @@ public class ActivityHandler {
 
         //read request from client
         ObjectInputStream clientInput = new ObjectInputStream(socket.getInputStream());
-        
-       
+
         ClientRequest request = (ClientRequest) clientInput.readObject();
 
 
