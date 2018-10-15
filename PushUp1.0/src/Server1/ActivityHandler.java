@@ -71,8 +71,10 @@ public class ActivityHandler {
 
         //read request from client
         ObjectInputStream clientInput = new ObjectInputStream(socket.getInputStream());
+        System.out.println("object received");
+        
         ClientRequest request = (ClientRequest) clientInput.readObject();
-
+        System.out.println("jjjj"+request.getTarget());
         //convert request to activity
         Activity activity = Activity.requestConversion(++timeCounter, session_ID, request);
 
@@ -122,6 +124,9 @@ public class ActivityHandler {
         String type = activity.getRequest().getType();
         String target = activity.getRequest().getTarget();
         String update = activity.getRequest().getUpdate();
+        
+        System.out.println(type + " " + target + " " + update);
+                
                 
 
         try {
@@ -133,14 +138,35 @@ public class ActivityHandler {
                 data.add(line);
                 System.out.println(line);
             }
-
+            
             fis.close();
+            
+            for(int i = 0; i < data.size(); i++) {
+                if (data.get(i).substring(0, 1).equals(target)) {
+                    System.out.println(data.get(i).substring(0, 1));
+                    
+                    
+                    int oldValue = Integer.parseInt(data.get(i).substring(3));
+                    System.out.println("old" + Integer.toString(oldValue));
+                    // data update
+                    //String updated = target + ", " + Integer.toString(oldValue - Integer.parseInt(update));
+                    //System.out.println(target + "ss");
+                    //data.set(i, updated);
+                    
+                    //System.out.println("Update:"+updated);
+                    return data.get(i);
+                }
+            }
 
+            
+            /*
             for (String each : data) {
+                System.out.println(each);
                 // If target line is found
                 if (each.substring(0, 1).equals(target)) {
                     // get target index
                     int index = data.indexOf(each);
+                    System.out.println(index);
                     // get old value of index
                     int oldValue = Integer.parseInt(each.substring(3));
 
@@ -148,14 +174,18 @@ public class ActivityHandler {
                     String updated = target + ", " + Integer.toString(oldValue - Integer.parseInt(update));
                     data.set(index, updated);
                     
+                    System.out.println("Update:"+updated);
                     return updated;
                 }
             }
+*/
+            
+            
+            System.out.println("Not Found:");
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
-
         return null;
     }
 
