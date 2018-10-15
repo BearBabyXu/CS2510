@@ -43,10 +43,7 @@ public class RunWriteClient2 {
         String update = "0";
 
         do {
-
-            // If return true then continue 
             
-
             String response = null;
             ClientRequest request = null;
 
@@ -61,7 +58,7 @@ public class RunWriteClient2 {
                 System.err.println(e.getMessage());
             }
                 
-                System.out.println("@Write Client 1, Update: " + update);
+                System.out.println("@Write Client 2, Update: " + update);
                 // create request message
                 request = new ClientRequest("Write", "A", update);
                 // send request
@@ -72,7 +69,7 @@ public class RunWriteClient2 {
 
                 // Wait for reply    
                 BufferedReader bw = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                System.out.println("@Write Client 1, Sum: " + bw.readLine());
+                System.out.println("@Write Client 2, Sum: " + bw.readLine());
 
             } else {
                 System.out.println("Reach End");
@@ -84,7 +81,7 @@ public class RunWriteClient2 {
 
     private static String readData() throws FileNotFoundException, IOException {
         String result = null;
-        FileInputStream fis = new FileInputStream("data1.txt");
+        FileInputStream fis = new FileInputStream("data2.txt");
         BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
 
         String line = "";
@@ -102,7 +99,7 @@ public class RunWriteClient2 {
         reader.close();
         fis.close();
 
-        FileWriter fw = new FileWriter(new File("data1.txt"));
+        FileWriter fw = new FileWriter(new File("data2.txt"));
         fw.write(sb.toString());
         fw.close();
 

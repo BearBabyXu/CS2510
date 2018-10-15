@@ -27,9 +27,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class RunWriteClient1 {
+public class RunWriteClient4 {
 
-    private final static int port = 8888;
+    private final static int port = 8889;
     private static ObjectInputStream input;
     private static ObjectOutputStream output;
     private static Socket socket;
@@ -43,7 +43,7 @@ public class RunWriteClient1 {
         String update = "0";
 
         do {
-            
+
             String response = null;
             ClientRequest request = null;
 
@@ -58,7 +58,7 @@ public class RunWriteClient1 {
                 System.err.println(e.getMessage());
             }
                 
-                System.out.println("@Write Client 1, Update: " + update);
+                System.out.println("@Write Client 4, Update: " + update);
                 // create request message
                 request = new ClientRequest("Write", "A", update);
                 // send request
@@ -69,7 +69,7 @@ public class RunWriteClient1 {
 
                 // Wait for reply    
                 BufferedReader bw = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                System.out.println("@Write Client 1, Sum: " + bw.readLine());
+                System.out.println("@Write Client 4, Sum: " + bw.readLine());
 
             } else {
                 System.out.println("Reach End");
@@ -81,7 +81,7 @@ public class RunWriteClient1 {
 
     private static String readData() throws FileNotFoundException, IOException {
         String result = null;
-        FileInputStream fis = new FileInputStream("data1.txt");
+        FileInputStream fis = new FileInputStream("data4.txt");
         BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
 
         String line = "";
@@ -99,7 +99,7 @@ public class RunWriteClient1 {
         reader.close();
         fis.close();
 
-        FileWriter fw = new FileWriter(new File("data1.txt"));
+        FileWriter fw = new FileWriter(new File("data4.txt"));
         fw.write(sb.toString());
         fw.close();
 
