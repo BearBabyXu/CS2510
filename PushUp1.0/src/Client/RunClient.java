@@ -56,6 +56,8 @@ public class RunClient {
                 // wait for request
                 BufferedReader bw=new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 System.out.println(bw.readLine());
+                
+                
                 /*
                input = new ObjectInputStream(socket.getInputStream());
                 response = (String)input.readObject();
