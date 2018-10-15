@@ -31,17 +31,12 @@ public class PeerHandle extends Thread {
         try {
             
             //Communication with peer
-            OutputStream peerOutput = null;
-            InputStream peerInput = null;
-            peerInput = socket.getInputStream();
-            peerOutput = socket.getOutputStream();
-            
-            
-            BufferedReader clientbf = new BufferedReader(new InputStreamReader(peerInput));
-      
-            System.out.println(clientbf.readLine());
-            
+         
+         ActivityHandler.PHandle(socket);
+         
         } catch (IOException ex) {
+            Logger.getLogger(PeerHandle.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(PeerHandle.class.getName()).log(Level.SEVERE, null, ex);
         }
 

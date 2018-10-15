@@ -20,9 +20,8 @@ public class ClientServer extends Thread {
     private final int clientPort = 8889;
 
     public void run() {
-
-        try {
             
+        try {
             ServerSocket serverSocket = new ServerSocket(clientPort);
             
             while (true) {

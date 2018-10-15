@@ -46,7 +46,7 @@ public class Activity implements Serializable{
        
 	
 	// get TimeStamp of this Request
-	public long getTimeStamp() 
+	public int getTimeStamp() 
 	{
 		return TimeStamp;
 	}
@@ -56,6 +56,10 @@ public class Activity implements Serializable{
 	{
 		return requesterID;
 	}
+        
+        public int getType(){
+        return this.type;
+        }
 
 
 	

@@ -27,7 +27,7 @@ public class ClientHandle extends Thread {
     
     private Socket socket;  
     private Socket peerSocket;
-    private final int peerPort=9999;
+    private final int peerPort=9998;
 
     public ClientHandle(Socket socket) throws IOException {
         this.socket = socket;
@@ -36,34 +36,21 @@ public class ClientHandle extends Thread {
     }
 
     public void run() {
-        try {   
-            System.out.println("Server2 Ready!");
-            final ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-            final ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-            
-            System.out.println((String)in.readObject());
-            
-            //Communication with peer server
-            OutputStream peerOutput=null;
-            InputStream peerInput=null;
-            peerInput=peerSocket.getInputStream();
-            peerOutput=peerSocket.getOutputStream();
+        
+        try {
 
-            socket.close();
-            
-            //Send request to peer
-            PrintWriter peerPW = new PrintWriter(peerOutput);
-            peerPW.println("Message From Server2");
-            peerPW.flush();
-            peerSocket.close();
-
-              
+          String result=  ActivityHandler.Handle(socket, this.getId());
+          PrintWriter pw=new PrintWriter(socket.getOutputStream());
+          pw.write(result);
+          pw.flush();
+          socket.close();
 
         } catch (IOException ex) {
             Logger.getLogger(ClientHandle.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(ClientHandle.class.getName()).log(Level.SEVERE, null, ex);
         }
+     
 
     }
 }
