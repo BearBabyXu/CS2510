@@ -124,10 +124,6 @@ public class ActivityHandler {
         String type = activity.getRequest().getType();
         String target = activity.getRequest().getTarget();
         String update = activity.getRequest().getUpdate();
-        
-        System.out.println(type + " " + target + " " + update);
-                
-                
 
         try {
             fis = new FileInputStream("data.txt");
@@ -139,10 +135,13 @@ public class ActivityHandler {
                 System.out.println(line);
             }
             
+            // read data from file
             fis.close();
             
             for(int i = 0; i < data.size(); i++) {
+                // find target
                 if (data.get(i).substring(0, 1).equals(target)) {
+                    
                     System.out.println(data.get(i).substring(0, 1));
                     
                     
