@@ -60,6 +60,11 @@ public class Activity implements Serializable{
         public int getType(){
         return this.type;
         }
+        
+        public String getInfo(){
+        
+        return String.valueOf(this.TimeStamp)+" "+this.clientRequest.getTarget()+" "+this.clientRequest.getType();
+        }
 
 
 	

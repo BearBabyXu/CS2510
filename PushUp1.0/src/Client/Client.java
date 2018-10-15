@@ -28,12 +28,9 @@ public abstract class Client {
             socket = new Socket(server, port);
             System.out.println("Connected to " + server + " on port " + port);
             
-            System.out.println("connect Success1");
             output = new ObjectOutputStream(socket.getOutputStream());
-            System.out.println("connect Success2");
             input = new ObjectInputStream(socket.getInputStream());
             
-            System.out.println("connect Success3");
             return true;
 			
 	} catch (UnknownHostException e) {
@@ -48,13 +45,6 @@ public abstract class Client {
 	
         return false;
     }
-    
-     public String newInputStream() throws IOException, ClassNotFoundException {
-         
-         input = new ObjectInputStream(socket.getInputStream());
-         return (String)input.readObject();
-               
-     }
     
     public void disconnect() {
         try {

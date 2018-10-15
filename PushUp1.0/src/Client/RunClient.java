@@ -26,54 +26,43 @@ import java.util.logging.Logger;
 public class RunClient {
 
     private final static int port = 8888;
-    protected static Socket socket;
-    protected static ObjectOutputStream output;
-    protected static ObjectInputStream input;
+    private static ObjectInputStream input;
+    private static ObjectOutputStream output;
+    private static Socket socket;
 
-    public static void main(String args[]){
+    public static void main(String args[]) {
 
-        try {
-            //Client1 client = new Client1();
-            socket = new Socket("127.0.0.1", port);
-            output = new ObjectOutputStream(socket.getOutputStream());
-            
-        } catch (IOException ex) {
-            Logger.getLogger(RunClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Client1 client = new Client1();
+
         Scanner read = new Scanner(System.in);
-        
+
+        // If return true then continue 
         try {
+            socket = new Socket("127.0.0.1", port);
+            
             // wait until server send response
             String response = null;
             ClientRequest request = null;
             int count = 1;
-            
+            do {
                 // write request
                 request = new ClientRequest("Read", "A", null);
+                output = new ObjectOutputStream(socket.getOutputStream());
                 output.writeObject(request);
-                System.out.println("Request sent");
-                
-                
-                BufferedReader br=new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                System.out.println(br.readLine());
-                
-                System.out.println("new");
-                /*
-                input = new ObjectInputStream(socket.getInputStream());
+
                 // wait for request
-                //response = client.newInputStream();
+                input = new ObjectInputStream(socket.getInputStream());
                 response = (String)input.readObject();
                 if (response == null) {
                     System.out.println("Get null response from server");
                 } else {
                     System.out.println(response);
                 }
-            */
+            } while (!(read.next() == ""));
 
-        } catch (IOException ex) {
-            Logger.getLogger(RunClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+
         }
 
     }
-
 }
