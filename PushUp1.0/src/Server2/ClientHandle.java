@@ -24,10 +24,10 @@ import java.util.logging.Logger;
  * @author brantxu
  */
 public class ClientHandle extends Thread {
-    
-    private Socket socket;  
+
+    private Socket socket;
     private Socket peerSocket;
-    private final int peerPort=9998;
+    private final int peerPort = 9998;
 
     public ClientHandle(Socket socket) throws IOException {
         this.socket = socket;
@@ -36,21 +36,23 @@ public class ClientHandle extends Thread {
     }
 
     public void run() {
-        
+
         try {
 
-          String result=  ActivityHandler.Handle(socket, this.getId());
-          PrintWriter pw=new PrintWriter(socket.getOutputStream());
-          pw.write(result);
-          pw.flush();
-          socket.close();
+            String result = ActivityHandler.Handle(socket, this.getId());
+            PrintWriter pw = new PrintWriter(socket.getOutputStream());
+            
+            pw.write(result);
+            pw.flush();
+            socket.close();
 
         } catch (IOException ex) {
             Logger.getLogger(ClientHandle.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(ClientHandle.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ClientHandle.class.getName()).log(Level.SEVERE, null, ex);
         }
-     
 
     }
 }

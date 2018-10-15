@@ -48,6 +48,7 @@ public class RunClient {
             do {
                 // write request
                 request = new ClientRequest("Read", "A", null);
+                count++;
                 output = new ObjectOutputStream(socket.getOutputStream());
                 output.writeObject(request);
                 

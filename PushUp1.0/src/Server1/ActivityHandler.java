@@ -99,11 +99,15 @@ public class ActivityHandler {
             }
 
             readCounter++;
+            
             System.out.println("READ"+readCounter);
+            Thread.sleep(5000);
             activityList.remove(0);
+            
             sendReadSkip();
             String result = Operate(activity);
             
+            Thread.sleep(5000);
             sendReadRelease();
             readCounter--;
 
@@ -139,7 +143,7 @@ public class ActivityHandler {
             String line = "";
             while ((line = reader.readLine()) != null) {
                 data.add(line);
-                System.out.println(line);
+            //   System.out.println(line);
             }
             
             // read data from file
@@ -199,8 +203,10 @@ public class ActivityHandler {
         peerSocket.close();
         
         //test
+     
         for(Activity e:activityList){
-        
+           
+       
         System.out.println(e.getInfo());
         }
         
