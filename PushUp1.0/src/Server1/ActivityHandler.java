@@ -8,6 +8,7 @@ package Server1;
 import Request.Activity;
 import Request.ClientRequest;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -126,6 +128,7 @@ public class ActivityHandler {
         FileInputStream fis = null;
         FileOutputStream fout = null;
         BufferedReader reader = null;
+        BufferedWriter writer = null;
         
         String type = activity.getRequest().getType();
         String target = activity.getRequest().getTarget();
@@ -144,25 +147,39 @@ public class ActivityHandler {
             // read data from file
             fis.close();
             
+            int targetIndex = -1;
             for(int i = 0; i < data.size(); i++) {
                 // find target
                 if (data.get(i).substring(0, 1).equals(target)) {
-                    
-                   // System.out.println(data.get(i).substring(0, 1));
-                    
-                    
-                    int oldValue = Integer.parseInt(data.get(i).substring(3));
-                   // System.out.println("old" + Integer.toString(oldValue));
-                    // data update
-                    //String updated = target + ", " + Integer.toString(oldValue - Integer.parseInt(update));
-                    //System.out.println(target + "ss");
-                    //data.set(i, updated);
-                    
-                    //System.out.println("Update:"+updated);
-                    return data.get(i);
+                    // get target index
+                    targetIndex = i;
                 }
             }
-
+            
+            if(type.equals("Read")) {
+                // return target data
+                return data.get(targetIndex);          
+            } else if (type.equals("Write")) {
+                // update updatdata
+                fout = new FileOutputStream("data.txt");
+                writer = new BufferedWriter(new OutputStreamWriter(fout));
+                for(int i = 0; i < data.size(); i++) {
+                    if(i == targetIndex) {
+                        int oldVal = Integer.parseInt(data.get(targetIndex).substring(3));
+                        int newVal = Integer.parseInt(update);
+                        writer.write(target + ", " + String.valueOf(oldVal-newVal) );
+                    } else {
+                        writer.write(data.get(i));
+                        writer.newLine();
+                    }
+                }
+                
+                fout.close();
+                System.out.println("Close File");
+            } else {
+                System.err.println("Not defined request type");
+            }
+            
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
