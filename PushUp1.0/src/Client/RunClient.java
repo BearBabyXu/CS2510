@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 
 public class RunClient {
 
-    private final static int port = 8888;
+    private final static int port = 8889;
     private static ObjectInputStream input;
     private static ObjectOutputStream output;
     private static Socket socket;
@@ -47,7 +47,7 @@ public class RunClient {
             int count = 1;
             do {
                 // write request
-                request = new ClientRequest("Write", "A", "3");
+                request = new ClientRequest("Write", "B", "3");
                 count++;
                 output = new ObjectOutputStream(socket.getOutputStream());
                 output.writeObject(request);

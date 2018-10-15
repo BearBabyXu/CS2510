@@ -93,26 +93,47 @@ public class ActivityHandler {
     public static String execute(Activity activity) throws IOException, InterruptedException {
 
         if (activity.getRequest().getType().equals("Read")) {
-
-            while (activityList.get(0).getRequesterId() != activity.getRequesterId()) {
+            boolean flag1=true;
+            while (flag1) {
+                if(activityList.get(0).getRequesterId() == activity.getRequesterId()){
+                    flag1=false;
+                }
             }
 
             readCounter++;
+            
             System.out.println("READ"+readCounter);
+
             activityList.remove(0);
+            
             sendReadSkip();
             String result = Operate(activity);
-            
             sendReadRelease();
             readCounter--;
 
             return result;
 
         } else {
-            while (activityList.get(0).getRequesterId() != activity.getRequesterId() || readCounter != 0) {
+            
+            
+            boolean flag2=true;
+            while (flag2) {
+                
+                if(activityList.get(0).getRequesterId() == activity.getRequesterId() || readCounter == 0){
+                flag2=false;
+                }
+                
             }
-
+            
+            
+          
             String result = Operate(activity);
+            
+            Thread.sleep(5000);
+            activityList.remove(0);
+            
+            
+            
             sendWriteRelease();
 
             return result;
@@ -183,7 +204,7 @@ public class ActivityHandler {
         peerSocket.close();
         
         //test
-     
+      System.out.println("\n");
         for(Activity e:activityList){
            
        
