@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  */
 public class PeerServer extends Thread {
     
-    private final int peerPort = 9998;
+    private final int peerPort = 9999;
 
     public void run() {
         

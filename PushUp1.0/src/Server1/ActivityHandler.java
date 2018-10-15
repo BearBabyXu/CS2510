@@ -97,11 +97,15 @@ public class ActivityHandler {
             }
 
             readCounter++;
+            
             System.out.println("READ"+readCounter);
+            Thread.sleep(5000);
             activityList.remove(0);
+            
             sendReadSkip();
             String result = Operate(activity);
             
+            Thread.sleep(5000);
             sendReadRelease();
             readCounter--;
 
@@ -136,7 +140,7 @@ public class ActivityHandler {
             String line = "";
             while ((line = reader.readLine()) != null) {
                 data.add(line);
-                System.out.println(line);
+            //   System.out.println(line);
             }
             
             // read data from file
@@ -146,11 +150,11 @@ public class ActivityHandler {
                 // find target
                 if (data.get(i).substring(0, 1).equals(target)) {
                     
-                    System.out.println(data.get(i).substring(0, 1));
+                   // System.out.println(data.get(i).substring(0, 1));
                     
                     
                     int oldValue = Integer.parseInt(data.get(i).substring(3));
-                    System.out.println("old" + Integer.toString(oldValue));
+                   // System.out.println("old" + Integer.toString(oldValue));
                     // data update
                     //String updated = target + ", " + Integer.toString(oldValue - Integer.parseInt(update));
                     //System.out.println(target + "ss");
@@ -182,8 +186,10 @@ public class ActivityHandler {
         peerSocket.close();
         
         //test
+     
         for(Activity e:activityList){
-        
+           
+       
         System.out.println(e.getInfo());
         }
         

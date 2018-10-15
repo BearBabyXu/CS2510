@@ -40,7 +40,7 @@ public class ClientHandle extends Thread {
 
             String result = ActivityHandler.Handle(socket, this.getId());
             PrintWriter pw = new PrintWriter(socket.getOutputStream());
-            System.out.print("answer:"+result);
+            
             pw.write(result);
             pw.flush();
             socket.close();
