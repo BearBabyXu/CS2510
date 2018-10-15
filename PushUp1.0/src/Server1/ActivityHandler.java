@@ -114,7 +114,8 @@ public class ActivityHandler {
         } else {
             while (activityList.get(0).getRequesterId() != activity.getRequesterId() || readCounter != 0) {
             }
-
+            
+            Thread.sleep(10000);
             String result = Operate(activity);
             sendWriteRelease();
 
@@ -167,15 +168,16 @@ public class ActivityHandler {
                     if(i == targetIndex) {
                         int oldVal = Integer.parseInt(data.get(targetIndex).substring(3));
                         int newVal = Integer.parseInt(update);
-                        writer.write(target + ", " + String.valueOf(oldVal-newVal) );
+                        writer.write(target + ", " + String.valueOf(oldVal-newVal) + "\n" );
                     } else {
-                        writer.write(data.get(i));
-                        writer.newLine();
+                        writer.write(data.get(i) + "\n");
                     }
                 }
                 
+                writer.flush();
                 fout.close();
                 System.out.println("Close File");
+                return "done";
             } else {
                 System.err.println("Not defined request type");
             }
