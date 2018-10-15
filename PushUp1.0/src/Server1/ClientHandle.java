@@ -49,6 +49,8 @@ public class ClientHandle extends Thread {
             Logger.getLogger(ClientHandle.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(ClientHandle.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ClientHandle.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }

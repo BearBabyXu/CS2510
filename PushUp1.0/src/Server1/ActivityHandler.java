@@ -19,6 +19,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,7 +44,8 @@ public class ActivityHandler {
         
         switch(peerActivity.getType()){
             
-            case 0: timeCounter=peerActivity.getTimeStamp()+1;
+            case 0: activityList.add(peerActivity);
+                    timeCounter=peerActivity.getTimeStamp()+1;
                     DataOutputStream peerOutput=new DataOutputStream(socket.getOutputStream());
                     peerOutput.writeInt(timeCounter);
                     socket.close();
@@ -67,14 +69,14 @@ public class ActivityHandler {
         
     }
 
-    public static String Handle(Socket socket, long session_ID) throws IOException, ClassNotFoundException {
+    public static String Handle(Socket socket, long session_ID) throws IOException, ClassNotFoundException, InterruptedException {
 
         //read request from client
         ObjectInputStream clientInput = new ObjectInputStream(socket.getInputStream());
-        System.out.println("object received");
+        
         
         ClientRequest request = (ClientRequest) clientInput.readObject();
-        System.out.println("jjjj"+request.getTarget());
+        
         //convert request to activity
         Activity activity = Activity.requestConversion(++timeCounter, session_ID, request);
 
@@ -87,18 +89,20 @@ public class ActivityHandler {
 
     }
 
-    public static String execute(Activity activity) throws IOException {
+    public static String execute(Activity activity) throws IOException, InterruptedException {
 
-        if (activity.getRequest().getType().equals("read")) {
+        if (activity.getRequest().getType().equals("Read")) {
 
             while (activityList.get(0).getRequesterId() != activity.getRequesterId()) {
             }
 
             readCounter++;
+            System.out.println("READ"+readCounter);
+            activityList.remove(0);
             sendReadSkip();
             String result = Operate(activity);
+            Thread.sleep(50000);
             sendReadRelease();
-            activityList.remove(0);
             readCounter--;
 
             return result;
@@ -125,7 +129,7 @@ public class ActivityHandler {
         String target = activity.getRequest().getTarget();
         String update = activity.getRequest().getUpdate();
         
-        System.out.println(type + " " + target + " " + update);
+       // System.out.println(type + " " + target + " " + update);
                 
                 
 
@@ -136,7 +140,7 @@ public class ActivityHandler {
             String line = "";
             while ((line = reader.readLine()) != null) {
                 data.add(line);
-                System.out.println(line);
+               // System.out.println(line);
             }
             
             fis.close();
@@ -147,7 +151,7 @@ public class ActivityHandler {
                     
                     
                     int oldValue = Integer.parseInt(data.get(i).substring(3));
-                    System.out.println("old" + Integer.toString(oldValue));
+                  //  System.out.println("old" + Integer.toString(oldValue));
                     // data update
                     //String updated = target + ", " + Integer.toString(oldValue - Integer.parseInt(update));
                     //System.out.println(target + "ss");
@@ -181,7 +185,7 @@ public class ActivityHandler {
 */
             
             
-            System.out.println("Not Found:");
+           // System.out.println("Not Found:");
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -201,6 +205,15 @@ public class ActivityHandler {
         // update local time
         timeCounter = input.readInt();
         peerSocket.close();
+        
+        //test
+        for(Activity e:activityList){
+        
+        System.out.println(e.getInfo());
+        }
+        
+        
+        
         return true;
     }
 
