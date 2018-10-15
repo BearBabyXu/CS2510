@@ -16,12 +16,13 @@ import java.util.logging.Logger;
  * @author brantxu
  */
 public class PeerServer extends Thread {
-
+    
     private final int peerPort = 9998;
 
     public void run() {
-
+        
         try {
+            
             ServerSocket serverSocket = new ServerSocket(peerPort);
             while (true) {
                 new PeerHandle(serverSocket.accept()).start();
