@@ -99,13 +99,11 @@ public class ActivityHandler {
             readCounter++;
             
             System.out.println("READ"+readCounter);
-            Thread.sleep(5000);
+
             activityList.remove(0);
             
             sendReadSkip();
             String result = Operate(activity);
-            
-            Thread.sleep(5000);
             sendReadRelease();
             readCounter--;
 
