@@ -12,9 +12,12 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
@@ -44,6 +47,7 @@ public class ActivityHandler {
     public static boolean PHandle(Socket socket) throws IOException, ClassNotFoundException{
         
         ObjectInputStream peerInput= new ObjectInputStream(socket.getInputStream());
+        System.out.print("here");
         Activity peerActivity=(Activity) peerInput.readObject();
         
         switch(peerActivity.getType()){
@@ -128,8 +132,6 @@ public class ActivityHandler {
                 
             }
             
-            
-          
             String result = Operate(activity);
             
             Thread.sleep(5000);
@@ -154,39 +156,50 @@ public class ActivityHandler {
         String type = activity.getRequest().getType();
         String target = activity.getRequest().getTarget();
         String update = activity.getRequest().getUpdate();
-
+        int time = activity.getTimeStamp();
         
-        int result = 0;
+        String result = "";
         int sum = 0;
         
         try {
-            fis = new FileInputStream("shareFile.txt");
-            reader = new BufferedReader(new InputStreamReader(fis));
-            sum = Integer.parseInt(reader.readLine());
-            fis.close();
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream("shareFile.txt")));
+            StringBuffer sb = new StringBuffer();
+            
+            //read each line
+            String line = "";
+            while((line = reader.readLine())!= null) {
+                sum = Integer.parseInt(line);
+                sb.append(line + "\n");
+            }
+            
+            reader.close();
             
             if (type.equals("Write")) {
+                System.out.printf("Write (oldVal: %d, addVal: %d) \n", sum, Integer.parseInt(update));
+                sum += Integer.parseInt(update);
+                sb.append(sum + "\n");
+                
+                System.out.println("New Sum: " + sum);
                 fout = new FileOutputStream("shareFile.txt");
                 writer = new BufferedWriter(new OutputStreamWriter(fout));
-                sum += Integer.parseInt(update);
-                fout.write(sum);
-                fout.flush();
+                writer.write(sb.toString());
+                writer.flush();
                 fout.close();
-                System.out.println("Sum: " + sum);
+                
             } else {
                 // Read sum
-                System.out.println("Sum: " + sum);
                 return String.valueOf(sum);
             }
-                         
+                
+            
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(Server1.ActivityHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ActivityHandler.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(Server1.ActivityHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ActivityHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+        System.out.println("Update End");
         return String.valueOf(sum);
-        
     }
 
     private static boolean timeSync(Activity activity) throws IOException {
@@ -203,7 +216,8 @@ public class ActivityHandler {
         peerSocket.close();
         
         //test
-      System.out.println("\n");
+        
+        System.out.println("\n");
         for(Activity e:activityList){
            
        

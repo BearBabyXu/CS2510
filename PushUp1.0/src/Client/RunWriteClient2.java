@@ -58,7 +58,7 @@ public class RunWriteClient2 {
 
             // Get data from data.txt
             update = String.valueOf(readData());
-            System.out.println("@Write Client 1, Update: " + update);
+            System.out.println("@Write Client 2, Update: " + update);
             // create request message
             request = new ClientRequest("Write", "A", update);
             // send request
@@ -69,7 +69,7 @@ public class RunWriteClient2 {
 
             // Wait for reply    
             BufferedReader bw = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            System.out.println("@Write Client 1, Sum: " + bw.readLine());
+            System.out.println("@Write Client 2, Sum: " + bw.readLine());
 
         } while (!update.equals("null"));
     }

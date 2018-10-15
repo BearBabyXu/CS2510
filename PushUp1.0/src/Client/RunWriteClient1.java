@@ -45,33 +45,41 @@ public class RunWriteClient1 {
         do {
 
             // If return true then continue 
-            try {
-                socket = new Socket("127.0.0.1", port);
-                //System.out.println("connect to server");
-
-            } catch (Exception e) {
-                System.err.println(e.getMessage());
-            }
+            
 
             String response = null;
             ClientRequest request = null;
 
             // Get data from data.txt
             update = String.valueOf(readData());
-            System.out.println("@Write Client 1, Update: " + update);
-            // create request message
-            request = new ClientRequest("Write", "A", update);
-            // send request
-            output = new ObjectOutputStream(socket.getOutputStream());
-            output.writeObject(request);
-            output.flush();
-            System.out.println("Request Sent");
+            if (!update.equals("null")) {
+                try {
+                socket = new Socket("127.0.0.1", port);
+                //System.out.println("connect to server");
 
-            // Wait for reply    
-            BufferedReader bw = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            System.out.println("@Write Client 1, Sum: " + bw.readLine());
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+                
+                System.out.println("@Write Client 1, Update: " + update);
+                // create request message
+                request = new ClientRequest("Write", "A", update);
+                // send request
+                output = new ObjectOutputStream(socket.getOutputStream());
+                output.writeObject(request);
+                output.flush();
+                System.out.println("Request Sent");
 
-        } while (!update.equals("null"));
+                // Wait for reply    
+                BufferedReader bw = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                System.out.println("@Write Client 1, Sum: " + bw.readLine());
+
+            } else {
+                System.out.println("Reach End");
+            }
+        } while (!(update.equals("null")));
+        
+        socket.close();
     }
 
     private static String readData() throws FileNotFoundException, IOException {
