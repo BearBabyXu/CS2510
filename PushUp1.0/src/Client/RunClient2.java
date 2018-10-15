@@ -7,27 +7,16 @@ package Client;
 
 import Request.ClientRequest;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class RunClient {
-
-    private final static int port = 8888;
+public class RunClient2 {
+    private final static int port = 8889;
     private static ObjectInputStream input;
     private static ObjectOutputStream output;
     private static Socket socket;
