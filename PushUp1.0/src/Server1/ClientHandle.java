@@ -34,7 +34,7 @@ public class ClientHandle extends Thread {
     public void run() {
 
         try {
-
+            
             String result = ActivityHandler.Handle(socket, this.getId());
             PrintWriter pw = new PrintWriter(socket.getOutputStream());
             

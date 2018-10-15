@@ -32,8 +32,8 @@ public class PeerHandle extends Thread {
         try {
             
             //Communication with peer
-         
          ActivityHandler.PHandle(socket);
+         
          
         } catch (IOException ex) {
             Logger.getLogger(PeerHandle.class.getName()).log(Level.SEVERE, null, ex);
