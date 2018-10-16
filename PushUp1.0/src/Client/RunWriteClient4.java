@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 
 public class RunWriteClient4 {
 
-    private final static int port = 8889;
+    private final static int port = 8887;
     private static ObjectInputStream input;
     private static ObjectOutputStream output;
     private static Socket socket;

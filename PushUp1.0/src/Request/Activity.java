@@ -3,7 +3,7 @@ package Request;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Activity implements Serializable{
+public class Activity implements Serializable, Comparable<Activity>{
 
 	/**
 	 * 
@@ -79,6 +79,17 @@ public class Activity implements Serializable{
             
         
         }
+
+    
+    @Override
+    public int compareTo(Activity o) {
+        if(this.TimeStamp<=o.TimeStamp){
+        return 1;
+             }else{
+        return -1;
+        }
+        
+    }
 	
 	
 
