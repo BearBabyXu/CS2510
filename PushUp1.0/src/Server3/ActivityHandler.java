@@ -208,7 +208,7 @@ public class ActivityHandler {
             //read each line
             String line = "";
             while ((line = reader.readLine()) != null) {
-                sum = Integer.parseInt(line);
+                sum = Integer.parseInt(line.split(":")[1]);
                 sb.append(line + "\n");
             }
 
@@ -217,7 +217,7 @@ public class ActivityHandler {
             if (type.equals("Write")) {
                 System.out.printf("Write (oldVal: %d, addVal: %d) \n", sum, Integer.parseInt(update));
                 sum += Integer.parseInt(update);
-                sb.append(sum + "\n");
+                sb.append(time + ":" +sum + "\n");
 
                 System.out.println("New Sum: " + sum);
                 fout = new FileOutputStream("shareFile.txt");
