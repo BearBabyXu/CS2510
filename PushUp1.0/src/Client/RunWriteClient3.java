@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 
 public class RunWriteClient3 {
 
-    private final static int port = 8888;
+    private final static int port = 8887;
     private static ObjectInputStream input;
     private static ObjectOutputStream output;
     private static Socket socket;
@@ -76,6 +76,8 @@ public class RunWriteClient3 {
             }
         } while (!(update.equals("null")));
         
+        File file = new File("data3.txt");
+        file.delete();
         socket.close();
     }
 

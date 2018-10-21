@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -28,16 +27,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class RunWriteClient1 {
+public class RunWriteClient6 {
 
-    private final static int port = 8888;
+    private final static int port = 8889;
     private static ObjectInputStream input;
     private static ObjectOutputStream output;
     private static Socket socket;
 
     public static void main(String args[]) throws IOException, ClassNotFoundException {
-        
-        fileDivide(6);
 
         Client1 client = new Client1();
 
@@ -46,7 +43,7 @@ public class RunWriteClient1 {
         String update = "0";
 
         do {
-            
+
             String response = null;
             ClientRequest request = null;
 
@@ -61,9 +58,9 @@ public class RunWriteClient1 {
                 System.err.println(e.getMessage());
             }
                 
-                System.out.println("@Write Client 1, Update: " + update);
+                System.out.println("@Write Client 6, Update: " + update);
                 // create request message
-                request = new ClientRequest("Write", "Server2", update);
+                request = new ClientRequest("Write", "Server1", update);
                 // send request
                 output = new ObjectOutputStream(socket.getOutputStream());
                 output.writeObject(request);
@@ -72,21 +69,21 @@ public class RunWriteClient1 {
 
                 // Wait for reply    
                 BufferedReader bw = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                System.out.println("@Write Client 1, Sum: " + bw.readLine());
+                System.out.println("@Write Client 6, Sum: " + bw.readLine());
 
             } else {
                 System.out.println("Reach End");
             }
         } while (!(update.equals("null")));
         
-        File file = new File("data1.txt");
+        File file = new File("data6.txt");
         file.delete();
         socket.close();
     }
 
     private static String readData() throws FileNotFoundException, IOException {
         String result = null;
-        FileInputStream fis = new FileInputStream("data1.txt");
+        FileInputStream fis = new FileInputStream("data6.txt");
         BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
 
         String line = "";
@@ -104,51 +101,11 @@ public class RunWriteClient1 {
         reader.close();
         fis.close();
 
-        FileWriter fw = new FileWriter(new File("data1.txt"));
+        FileWriter fw = new FileWriter(new File("data6.txt"));
         fw.write(sb.toString());
         fw.close();
 
         return result;
-    }
-    
-    private static void fileDivide(int SERVER_COUNT) {
-        File file = new File("data.txt");
-
-        try {
-            BufferedReader rd = new BufferedReader(new FileReader(file));
-            String line = "";
-            List<String> buffer = new ArrayList<String>();
-            int line_count = 0;
-
-            while ((line = rd.readLine()) != null) {
-                line_count++;
-                buffer.add(line);
-            }
-
-            File fw = new File("data1.txt");
-            BufferedWriter wr = new BufferedWriter(new FileWriter(fw));
-            int file_num = 1;
-
-            for (int i = 1; i <= line_count; i++) {
-                if (i % (line_count / SERVER_COUNT) == 0 && file_num < SERVER_COUNT) {
-                    wr.close();
-                    fw = new File("data" + ++file_num + ".txt");
-                    wr = new BufferedWriter(new FileWriter(fw));
-
-                }
-                wr.write(buffer.get(i - 1) + "\n");
-            }
-
-            wr.close();
-            System.err.println("Data division done!");
-
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
     }
 
 }

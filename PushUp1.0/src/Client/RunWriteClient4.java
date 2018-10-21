@@ -76,6 +76,8 @@ public class RunWriteClient4 {
             }
         } while (!(update.equals("null")));
         
+        File file = new File("data4.txt");
+        file.delete();
         socket.close();
     }
 
