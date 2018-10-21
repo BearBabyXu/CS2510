@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -35,6 +36,8 @@ public class RunWriteClient1 {
     private static Socket socket;
 
     public static void main(String args[]) throws IOException, ClassNotFoundException {
+        
+        fileDivide(3);
 
         Client1 client = new Client1();
 
@@ -106,6 +109,46 @@ public class RunWriteClient1 {
         fw.close();
 
         return result;
+    }
+    
+    private static void fileDivide(int SERVER_COUNT) {
+        File file = new File("data.txt");
+
+        try {
+            BufferedReader rd = new BufferedReader(new FileReader(file));
+            String line = "";
+            List<String> buffer = new ArrayList<String>();
+            int line_count = 0;
+
+            while ((line = rd.readLine()) != null) {
+                line_count++;
+                buffer.add(line);
+            }
+
+            File fw = new File("data1.txt");
+            BufferedWriter wr = new BufferedWriter(new FileWriter(fw));
+            int file_num = 1;
+
+            for (int i = 1; i <= line_count; i++) {
+                if (i % (line_count / SERVER_COUNT) == 0 && file_num < SERVER_COUNT) {
+                    wr.close();
+                    fw = new File("data" + ++file_num + ".txt");
+                    wr = new BufferedWriter(new FileWriter(fw));
+
+                }
+                wr.write(buffer.get(i - 1) + "\n");
+            }
+
+            wr.close();
+            System.err.println("Data division done!");
+
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
 }
