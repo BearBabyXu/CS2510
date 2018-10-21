@@ -5,6 +5,12 @@
  */
 package Initiate;
 
+import Client.RunReadClient5;
+import Client.RunReadClient6;
+import Client.RunWriteClient1;
+import Client.RunWriteClient2;
+import Client.RunWriteClient3;
+import Client.RunWriteClient4;
 import Server1.ClientServer;
 import Server1.PeerServer;
 import Server1.Server1;
@@ -17,11 +23,13 @@ import java.nio.file.Paths;
  *
  * @author brantxu
  */
-public class Initiate {
-      public static void main(String[] args) throws IOException {
+public class InitiateServers {
+      public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
 
-     Runtime run = Runtime.getRuntime();
-   
+          Server1.main(args);
+          Server2.main(args);
+          Server3.main(args);
+             
       
 }
       
