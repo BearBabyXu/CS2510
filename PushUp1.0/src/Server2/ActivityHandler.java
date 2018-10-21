@@ -229,7 +229,7 @@ public class ActivityHandler {
             if (type.equals("Write")) {
                 System.out.printf("Write (oldVal: %d, addVal: %d) \n", sum, Integer.parseInt(update));
                 sum += Integer.parseInt(update);
-                sb.append(time + ":" + sum + ":" + update);
+                sb.append(time + ":" + sum);
 
                 System.out.println("New Sum: " + sum);
                 fout = new FileOutputStream("shareFile.txt");

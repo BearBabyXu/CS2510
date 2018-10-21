@@ -37,7 +37,7 @@ public class RunWriteClient1 {
 
     public static void main(String args[]) throws IOException, ClassNotFoundException {
         
-        fileDivide(3);
+        fileDivide(4);
 
         Client1 client = new Client1();
 
@@ -91,10 +91,8 @@ public class RunWriteClient1 {
         boolean firstLine = true;
         StringBuffer sb = new StringBuffer("");
         while ((line = reader.readLine()) != null) {
-            System.out.println("line: " + line);
             if (firstLine) {
                 result = line;
-                System.out.println("first: " + result);
             } else {
                 sb.append(line + "\n");
             }
