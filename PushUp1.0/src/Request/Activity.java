@@ -10,11 +10,11 @@ public class Activity implements Serializable, Comparable<Activity>{
 	 */
 	private static final long serialVersionUID = -2193091130641718696L;
 	private int TimeStamp;  
-	private long requesterID;   // session ID
+	private String requesterID;   // session ID
 	private ClientRequest clientRequest;    // Client request
         private int type;   //0 read or write, 1 readSkip, 2 readRelease, 3 writeRelease ;
 	
-	public Activity(int time, long requestID, ClientRequest clientRequest, int type) 
+	public Activity(int time, String requestID, ClientRequest clientRequest, int type) 
 	{
 		// initialization constructor
 		this.TimeStamp = time;
@@ -52,7 +52,7 @@ public class Activity implements Serializable, Comparable<Activity>{
 	}
 	
 	// get Requester ID
-	public long getRequesterId()
+	public String getRequesterId()
 	{
 		return requesterID;
 	}
@@ -63,7 +63,7 @@ public class Activity implements Serializable, Comparable<Activity>{
         
         public String getInfo(){
         
-        return String.valueOf(this.TimeStamp)+" "+this.clientRequest.getTarget()+" "+this.clientRequest.getType();
+        return String.valueOf(this.TimeStamp)+" "+this.clientRequest.getTarget()+" "+this.getRequesterId()+" "+this.clientRequest.getType();
         }
 
 
@@ -73,7 +73,7 @@ public class Activity implements Serializable, Comparable<Activity>{
 		return clientRequest;
 	}
         
-        public static Activity requestConversion(int time, long requestID,ClientRequest request){
+        public static Activity requestConversion(int time, String requestID,ClientRequest request){
             
             return new Activity(time,requestID ,request,0);
             

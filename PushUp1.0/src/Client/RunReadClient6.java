@@ -21,9 +21,9 @@ import java.net.Socket;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
-public class RunReadClient5 {
+public class RunReadClient6 {
 
-    private final static int port = 8889;
+    private final static int port = 8888;
     private static ObjectInputStream input;
     private static ObjectOutputStream output;
     private static Socket socket;
@@ -43,7 +43,7 @@ public class RunReadClient5 {
             ClientRequest request = null;
             
             // create request message
-            request = new ClientRequest("Read", "Server3", update);
+            request = new ClientRequest("Read", "A", update);
             // send request
             output = new ObjectOutputStream(socket.getOutputStream());
             output.writeObject(request);

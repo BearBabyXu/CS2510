@@ -60,7 +60,7 @@ public class RunWriteClient3 {
                 
                 System.out.println("@Write Client 3, Update: " + update);
                 // create request message
-                request = new ClientRequest("Write", "A", update);
+                request = new ClientRequest("Write", "Server2", update);
                 // send request
                 output = new ObjectOutputStream(socket.getOutputStream());
                 output.writeObject(request);
@@ -88,8 +88,10 @@ public class RunWriteClient3 {
         boolean firstLine = true;
         StringBuffer sb = new StringBuffer("");
         while ((line = reader.readLine()) != null) {
+            System.out.println("line: " + line);
             if (firstLine) {
                 result = line;
+                System.out.println("first: " + result);
             } else {
                 sb.append(line + "\n");
             }

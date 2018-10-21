@@ -8,6 +8,10 @@ package Server1;
 import Request.Activity;
 import Request.ActivityComparator;
 import Request.ClientRequest;
+import Request.SendReadRelease;
+import Request.SendReadSkip;
+import Request.SendWriteRelease;
+        
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
@@ -43,12 +47,20 @@ public class ActivityHandler {
     private static final String peerIP = "127.0.0.1";
     private static final int[] peerPort = {9998, 9999};
 
-    
+    // here
+    public static boolean updateTimeCounter(int update) {
+
+        timeCounter = Math.max(update, timeCounter);
+
+        return true;
+
+    }
+
     public static boolean PHandle(Socket socket) throws IOException, ClassNotFoundException {
 
         ObjectInputStream peerInput = new ObjectInputStream(socket.getInputStream());
         Activity peerActivity = (Activity) peerInput.readObject();
-
+        System.out.print("Type:" + peerActivity.getType());
         switch (peerActivity.getType()) {
 
             case 0:
@@ -71,28 +83,28 @@ public class ActivityHandler {
                 System.out.println("readSkip received");
                 readCounter++;
                 activityList.remove(0);
-                 if(!activityList.isEmpty()){
-                System.out.println("0: " + activityList.get(0).getRequesterId());}
+                if (!activityList.isEmpty()) {
+                    System.out.println("0: " + activityList.get(0).getRequesterId());
+                }
                 break;
             case 2:
                 System.out.println("readRelease received");
                 readCounter--;
-                     if(!activityList.isEmpty()){
-                   System.out.println("0: " + activityList.get(0).getRequesterId());
-                
-                System.out.println("0: " + activityList.get(0).getRequesterId());}
-          
-             
+                if (!activityList.isEmpty()) {
+                    System.out.println("0: " + activityList.get(0).getRequesterId());
+
+                    
+                }
+
                 break;
             case 3:
                 System.out.println("writeRelease received");
                 activityList.remove(0);
-                
-                if(!activityList.isEmpty()){
-                
-                
-                System.out.println("0: " + activityList.get(0).getRequesterId());}
-          
+
+                if (!activityList.isEmpty()) {
+
+                    System.out.println("0: " + activityList.get(0).getRequesterId());
+                }
 
                 break;
 
@@ -101,7 +113,7 @@ public class ActivityHandler {
 
     }
 
-    public static String Handle(Socket socket, long session_ID) throws IOException, ClassNotFoundException, InterruptedException {
+    public static String Handle(Socket socket, String session_ID) throws IOException, ClassNotFoundException, InterruptedException {
 
         //read request from client
         ObjectInputStream clientInput = new ObjectInputStream(socket.getInputStream());
@@ -113,6 +125,7 @@ public class ActivityHandler {
 
         //Push the activity into the queue
         activityList.add(activity);
+        activityList.sort(new ActivityComparator());
         System.out.println("\n A new request from client, now queue:");
         for (Activity e : activityList) {
 
@@ -126,16 +139,18 @@ public class ActivityHandler {
     }
 
     public static String execute(Activity activity) throws IOException, InterruptedException {
+        
+        Thread.sleep(500);
 
         if (activity.getRequest().getType().equals("Read")) {
             boolean flag1 = true;
             System.out.println("0: " + activityList.get(0).getRequesterId());
             System.out.println("ID: " + activity.getRequesterId());
-            System.out.print("ReadCounter:"+readCounter);
+            System.out.print("ReadCounter:" + readCounter);
 
             while (flag1) {
                 Thread.sleep(50);
-                if (activityList.get(0).getRequesterId() == activity.getRequesterId()) {
+                if (activityList.get(0).getRequesterId().equals( activity.getRequesterId())) {
                     flag1 = false;
                 }
             }
@@ -146,6 +161,7 @@ public class ActivityHandler {
 
             sendReadSkip();
             String result = Operate(activity);
+            
             sendReadRelease();
             readCounter--;
 
@@ -156,22 +172,19 @@ public class ActivityHandler {
             System.out.println("0: " + activityList.get(0).getRequesterId());
             System.out.println("ID: " + activity.getRequesterId());
             boolean flag2 = true;
-            long previous=0;
+            long previous = 0;
             while (flag2) {
-                if(previous!=activityList.get(0).getRequesterId()){
-                System.out.println("previous:" +previous+" Now:"+activityList.get(0).getRequesterId());
                 
-                }
                 Thread.sleep(50);
-                previous=activityList.get(0).getRequesterId();
                 
-                if (activityList.get(0).getRequesterId() == activity.getRequesterId() && readCounter == 0) {
+
+                if (activityList.get(0).getRequesterId().equals(activity.getRequesterId()) && readCounter == 0) {
                     flag2 = false;
                     break;
                 }
 
             }
-            System.out.println("out");
+            System.out.println("out "+activity.getRequesterId());
             String result = Operate(activity);
 
             Thread.sleep(5000);
@@ -209,20 +222,20 @@ public class ActivityHandler {
                 sum = Integer.parseInt(line.split(":")[1]);
                 sb.append(line + "\n");
             }
-
+            
             reader.close();
 
             if (type.equals("Write")) {
                 System.out.printf("Write (oldVal: %d, addVal: %d) \n", sum, Integer.parseInt(update));
                 sum += Integer.parseInt(update);
-                sb.append(time + ":" +sum + "\n");
+                sb.append(time + ":" + sum + ":" + update);
 
                 System.out.println("New Sum: " + sum);
                 fout = new FileOutputStream("shareFile.txt");
                 writer = new BufferedWriter(new OutputStreamWriter(fout));
                 writer.write(sb.toString());
                 writer.flush();
-                fout.close();
+                //fout.close();
 
             } else {
                 // Read sum
@@ -241,18 +254,23 @@ public class ActivityHandler {
 
     private static boolean timeSync(Activity activity) throws IOException {
         for (int i = 0; i < peerPort.length; i++) {
+
             Socket peerSocket = new Socket(peerIP, peerPort[i]);
+            new TimeSync(peerSocket, activity).start();
 
-            ObjectOutputStream output = new ObjectOutputStream(peerSocket.getOutputStream());
-            output.writeObject(activity);
-
-            DataInputStream input = new DataInputStream(peerSocket.getInputStream());
-
-            // update local time
-            timeCounter = Math.max(input.readInt(), timeCounter);
-            peerSocket.close();
-
-            //test
+//            // here
+//            Socket peerSocket = new Socket(peerIP, peerPort[i]);
+//
+//            ObjectOutputStream output = new ObjectOutputStream(peerSocket.getOutputStream());
+//            output.writeObject(activity);
+//
+//            DataInputStream input = new DataInputStream(peerSocket.getInputStream());
+//
+//            // update local time
+//            timeCounter = Math.max(input.readInt(), timeCounter);
+//            peerSocket.close();
+//
+//            //test
         }
 
         return true;
@@ -261,9 +279,12 @@ public class ActivityHandler {
     private static boolean sendReadSkip() throws IOException {
         for (int i = 0; i < peerPort.length; i++) {
             Socket peerSocket = new Socket(peerIP, peerPort[i]);
-            ObjectOutputStream output = new ObjectOutputStream(peerSocket.getOutputStream());
-            output.writeObject(Activity.createReadSkip());
-            peerSocket.close();
+            new SendReadSkip(peerSocket).start();
+            
+//     
+//ObjectOutputStream output = new ObjectOutputStream(peerSocket.getOutputStream());
+//            output.writeObject(Activity.createReadSkip());
+//            peerSocket.close();
         }
         return true;
     }
@@ -271,9 +292,11 @@ public class ActivityHandler {
     private static boolean sendReadRelease() throws IOException {
         for (int i = 0; i < peerPort.length; i++) {
             Socket peerSocket = new Socket(peerIP, peerPort[i]);
-            ObjectOutputStream output = new ObjectOutputStream(peerSocket.getOutputStream());
-            output.writeObject(Activity.createReadRelease());
-            peerSocket.close();
+            new SendReadRelease(peerSocket).start();
+            
+//            ObjectOutputStream output = new ObjectOutputStream(peerSocket.getOutputStream());
+//            output.writeObject(Activity.createReadRelease());
+//            peerSocket.close();
         }
         return true;
     }
@@ -281,12 +304,15 @@ public class ActivityHandler {
     private static boolean sendWriteRelease() throws IOException {
         for (int i = 0; i < peerPort.length; i++) {
             Socket peerSocket = new Socket(peerIP, peerPort[i]);
-            ObjectOutputStream output = new ObjectOutputStream(peerSocket.getOutputStream());
-            output.writeObject(Activity.createWriteRelease());
-            peerSocket.close();
+            
+            new SendWriteRelease(peerSocket).start();
+            
+//            
+//            ObjectOutputStream output = new ObjectOutputStream(peerSocket.getOutputStream());
+//            output.writeObject(Activity.createWriteRelease());
+//            peerSocket.close();
         }
         return true;
     }
 
 }
-

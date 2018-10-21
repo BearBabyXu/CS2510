@@ -10,6 +10,7 @@ import Server1.PeerServer;
 import Server1.Server1;
 import Server2.Server2;
 import Server3.Server3;
+import java.io.IOException;
 import java.nio.file.Paths;
 
 /**
@@ -17,12 +18,10 @@ import java.nio.file.Paths;
  * @author brantxu
  */
 public class Initiate {
-      public static void main(String[] args) {
+      public static void main(String[] args) throws IOException {
 
-      Server1.main(args);
-      Server2.main(args);
-      Server3.main(args);
-      
+     Runtime run = Runtime.getRuntime();
+   
       
 }
       
