@@ -88,10 +88,8 @@ public class RunWriteClient2 {
         boolean firstLine = true;
         StringBuffer sb = new StringBuffer("");
         while ((line = reader.readLine()) != null) {
-            System.out.println("line: " + line);
             if (firstLine) {
                 result = line;
-                System.out.println("first: " + result);
             } else {
                 sb.append(line + "\n");
             }
