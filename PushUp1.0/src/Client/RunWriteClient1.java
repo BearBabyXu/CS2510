@@ -37,7 +37,7 @@ public class RunWriteClient1 {
 
     public static void main(String args[]) throws IOException, ClassNotFoundException {
         
-        fileDivide(3);
+        fileDivide(4);
 
         Client1 client = new Client1();
 

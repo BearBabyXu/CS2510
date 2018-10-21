@@ -140,7 +140,7 @@ public class ActivityHandler {
 
     public static String execute(Activity activity) throws IOException, InterruptedException {
         
-        Thread.sleep(500);
+        Thread.sleep(50);
 
         if (activity.getRequest().getType().equals("Read")) {
             boolean flag1 = true;
@@ -187,7 +187,7 @@ public class ActivityHandler {
             System.out.println("out "+activity.getRequesterId());
             String result = Operate(activity);
 
-            Thread.sleep(5000);
+            Thread.sleep(500);
             activityList.remove(0);
 
             sendWriteRelease();
