@@ -21,7 +21,7 @@ import java.net.Socket;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
-public class RunReadClient6 {
+public class RunReadClient10 {
 
     private final static int port = 8888;
     private static ObjectInputStream input;
@@ -52,9 +52,9 @@ public class RunReadClient6 {
 
             // Wait for reply    
             BufferedReader bw = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            System.out.println("@Read Client 5, Sum: " + bw.readLine());
+            System.out.println("@Read Client 10, Sum: " + bw.readLine());
 
-            TimeUnit.SECONDS.sleep(2);
+            TimeUnit.MILLISECONDS.sleep(500);
             
         } while (true);
 
