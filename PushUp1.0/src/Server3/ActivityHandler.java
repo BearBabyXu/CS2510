@@ -215,6 +215,10 @@ public class ActivityHandler {
         int sum = 0;
 
         try {
+            File file = new File("shareFile.txt");
+            if(!file.exists())
+                file.createNewFile();
+            
             reader = new BufferedReader(new InputStreamReader(new FileInputStream("shareFile.txt")));
             StringBuffer sb = new StringBuffer();
 
