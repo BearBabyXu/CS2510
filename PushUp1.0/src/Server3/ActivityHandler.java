@@ -72,10 +72,10 @@ public class ActivityHandler {
                 activityList.sort(new ActivityComparator());
 
                 System.out.println("\n A new request from peer, now queue:");
-                for (Activity e : activityList) {
-
-                    System.out.println(e.getInfo());
-                }
+//                for (Activity e : activityList) {
+//
+//                    System.out.println(e.getInfo());
+//                }
                 DataOutputStream peerOutput = new DataOutputStream(socket.getOutputStream());
                 peerOutput.writeInt(timeCounter);
                 socket.close();
@@ -129,10 +129,10 @@ public class ActivityHandler {
         activityList.add(activity);
         activityList.sort(new ActivityComparator());
         System.out.println("\n A new request from client, now queue:");
-        for (Activity e : activityList) {
-
-            System.out.println(e.getInfo());
-        }
+//        for (Activity e : activityList) {
+//
+//            System.out.println(e.getInfo());
+//        }
 
         // Time syncronization
         timeSync(activity);

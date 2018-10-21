@@ -43,7 +43,7 @@ public class RunReadClient10 {
             ClientRequest request = null;
             
             // create request message
-            request = new ClientRequest("Read", "A", update);
+            request = new ClientRequest("Read", "Server2", update);
             // send request
             output = new ObjectOutputStream(socket.getOutputStream());
             output.writeObject(request);
