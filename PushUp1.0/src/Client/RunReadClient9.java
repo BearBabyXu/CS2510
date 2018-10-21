@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 public class RunReadClient9 {
 
-    private final static int port = 8888;
+    private final static int port = 8887;
     private static ObjectInputStream input;
     private static ObjectOutputStream output;
     private static Socket socket;
@@ -43,7 +43,7 @@ public class RunReadClient9 {
             ClientRequest request = null;
             
             // create request message
-            request = new ClientRequest("Read", "A", update);
+            request = new ClientRequest("Read", "Server1", update);
             // send request
             output = new ObjectOutputStream(socket.getOutputStream());
             output.writeObject(request);

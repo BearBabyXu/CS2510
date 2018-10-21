@@ -60,7 +60,7 @@ public class RunWriteClient6 {
                 
                 System.out.println("@Write Client 6, Update: " + update);
                 // create request message
-                request = new ClientRequest("Write", "Server1", update);
+                request = new ClientRequest("Write", "Server3", update);
                 // send request
                 output = new ObjectOutputStream(socket.getOutputStream());
                 output.writeObject(request);
