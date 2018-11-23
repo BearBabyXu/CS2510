@@ -11,4 +11,6 @@ package facepull;
  */
 public class ReducerHelper {
     
+    private int id;
+    
 }

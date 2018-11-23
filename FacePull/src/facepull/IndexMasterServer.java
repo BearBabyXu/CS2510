@@ -9,6 +9,6 @@ package facepull;
  *
  * @author brantxu
  */
-public class IndexMasrerServer {
+public class IndexMasterServer {
     
 }
