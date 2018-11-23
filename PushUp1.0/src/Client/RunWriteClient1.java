@@ -37,7 +37,7 @@ public class RunWriteClient1 {
 
     public static void main(String args[]) throws IOException, ClassNotFoundException {
         
-        fileDivide(6);
+        fileDivide(3);
 
         Client1 client = new Client1();
 
@@ -66,6 +66,7 @@ public class RunWriteClient1 {
                 request = new ClientRequest("Write", "Server2", update);
                 // send request
                 output = new ObjectOutputStream(socket.getOutputStream());
+                long start = System.currentTimeMillis();
                 output.writeObject(request);
                 output.flush();
                 System.out.println("Request Sent");
@@ -73,6 +74,8 @@ public class RunWriteClient1 {
                 // Wait for reply    
                 BufferedReader bw = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 System.out.println("@Write Client 1, Sum: " + bw.readLine());
+                long end = System.currentTimeMillis();
+                writeRes(end,start);
 
             } else {
                 System.out.println("Reach End");
@@ -151,4 +154,13 @@ public class RunWriteClient1 {
         }
     }
 
+    private static void writeRes(long end, long start) throws IOException {
+        System.out.println(end + " - " + start + ", " + Long.toString(end - start));
+        File file = new File("src/time/Client1.txt");
+        if(!file.exists())
+            file.createNewFile();
+        BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
+        bw.write(Long.toString(end - start) + "\n");
+        bw.close();
+    }
 }
