@@ -63,13 +63,16 @@ public class RunWriteClient3 {
                 request = new ClientRequest("Write", "Server1", update);
                 // send request
                 output = new ObjectOutputStream(socket.getOutputStream());
+                long start = System.currentTimeMillis();
                 output.writeObject(request);
                 output.flush();
                 System.out.println("Request Sent");
 
                 // Wait for reply    
-                BufferedReader bw = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                BufferedReader bw = new BufferedReader(new InputStreamReader(socket.getInputStream()));                
                 System.out.println("@Write Client 3, Sum: " + bw.readLine());
+                long end = System.currentTimeMillis();
+                writeRes(end,start);
 
             } else {
                 System.out.println("Reach End");
@@ -108,4 +111,13 @@ public class RunWriteClient3 {
         return result;
     }
 
+    private static void writeRes(long end, long start) throws IOException {
+        System.out.println(end + " - " + start + ", " + Long.toString(end - start));
+        File file = new File("src/time/Client3.txt");
+        if(!file.exists())
+            file.createNewFile();
+        BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
+        bw.write(Long.toString(end - start) + "\n");
+        bw.close();
+    }
 }

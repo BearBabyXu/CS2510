@@ -46,6 +46,7 @@ public class RunReadClient9 {
             request = new ClientRequest("Read", "Server1", update);
             // send request
             output = new ObjectOutputStream(socket.getOutputStream());
+            long start = System.currentTimeMillis();
             output.writeObject(request);
             output.flush();
             System.out.println("Request Sent");
@@ -53,11 +54,22 @@ public class RunReadClient9 {
             // Wait for reply    
             BufferedReader bw = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             System.out.println("@Read Client 9, Sum: " + bw.readLine());
-
+            long end = System.currentTimeMillis();
+            
+            writeRes(end,start);
             TimeUnit.MILLISECONDS.sleep(500);
             
         } while (true);
 
     }
-
+    
+    private static void writeRes(long end, long start) throws IOException {
+        System.out.println(end + " - " + start + ", " + Long.toString(end - start));
+        File file = new File("src/time/Client9.txt");
+        if(!file.exists())
+            file.createNewFile();
+        BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
+        bw.write(Long.toString(end - start) + "\n");
+        bw.close();
+    }
 }
