@@ -5,10 +5,15 @@
  */
 package face_pull;
 
+import java.io.Serializable;
+
 /**
  *
- * @author Egan
+ * @author Rycemond
  */
-public class MapperHelper {
+public class IndexReply implements Serializable{
     
+    public IndexReply() {
+        
+    }
 }
