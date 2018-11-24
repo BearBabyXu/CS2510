@@ -15,8 +15,8 @@ import java.util.LinkedList;
  * @author Egan
  */
 public class IndexMaster extends Thread{
-    private ArrayList<MapperHelper> mapperHelperList;
-    private ArrayList<ReducerHelper> reducerHelperList;
+    private ArrayList<Mapper> mapperHelperList;
+    private ArrayList<Reducer> reducerHelperList;
     private Socket socket;
     private static LinkedList<IndexRequest> indexJobQueue;
     
