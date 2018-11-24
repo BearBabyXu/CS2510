@@ -11,7 +11,7 @@ import java.io.Serializable;
  *
  * @author Egan
  */
-public class MapperConfig implements Serializable{
+public class MapperConfig implements Serializable {
     private String File_Directory;
     private int Mapper_ID;
     private int Mapper_Count;

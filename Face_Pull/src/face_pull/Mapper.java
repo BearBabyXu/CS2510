@@ -125,12 +125,12 @@ public class Mapper {
         return SENDS.isEmpty();
     }
     
-    public void addSend(ReducerConfig RC) {
+    public void addSend(ReducerPackage RC) {
         SENDS.add(RC);
     }
     
-    public ReducerConfig getNextSend() {
-        return (ReducerConfig) SENDS.poll();
+    public ReducerPackage getNextSend() {
+        return (ReducerPackage) SENDS.poll();
     }
 }
 
@@ -143,7 +143,7 @@ class MapperThread extends Thread {
     
     public void run() {
         MapperConfig MC = null;
-        ReducerConfig RC = null;
+        ReducerPackage RC = null;
         ArrayList<String> contents = null;
         HashMap<String, Integer> table = null;
         
@@ -156,7 +156,7 @@ class MapperThread extends Thread {
                     MC = mapper.getNextTask();
                     contents = mapper.readContent(MC);
                     table = mapper.mapping(contents);
-                    RC = new ReducerConfig(MC.getFileDirectory(), table);
+                    RC = new ReducerPackage(MC.getFileDirectory(), table);
                     mapper.addSend(RC);
                     System.err.println("Finish Task!!");
                 }              
@@ -207,7 +207,7 @@ class MapperSender extends Thread {
     public void run() {
         Socket socket = null;
         ObjectOutputStream out = null;
-        ReducerConfig RC = null;
+        ReducerPackage RC = null;
         
         while(true) {
             try {

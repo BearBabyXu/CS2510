@@ -10,7 +10,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -67,11 +66,11 @@ public class Reducer {
         return TASKS.isEmpty();
     }
     
-    public ReducerConfig getNextTask() {
-        return (ReducerConfig) TASKS.poll();
+    public ReducerPackage getNextTask() {
+        return (ReducerPackage) TASKS.poll();
     }
     
-    public void addTask(ReducerConfig RC) {
+    public void addTask(ReducerPackage RC) {
         TASKS.add(RC);
     }
     
@@ -79,7 +78,7 @@ public class Reducer {
         return Result;
     }
     
-    public void reduce(ReducerConfig RC) {
+    public void reduce(ReducerPackage RC) {
         HashMap<String, Integer> Table = RC.getTable();
         LinkedList<Posting> tempList = null;
         Posting posting = null;
@@ -141,7 +140,7 @@ class ReducerThread extends Thread {
     }
     
     public void run() {
-        ReducerConfig RC = null;
+        ReducerPackage RC = null;
         IndexReply IR = null;
         
         while(true) {
@@ -173,13 +172,13 @@ class ReducerListener extends Thread {
     public void run() {
         Socket socket = null;
         ObjectInputStream in = null;
-        ReducerConfig RC = null;
+        ReducerPackage RC = null;
         
         while(true) {
             try {
                 socket = serverSocket.accept();
                 in = new ObjectInputStream(socket.getInputStream());
-                RC = (ReducerConfig) in.readObject();
+                RC = (ReducerPackage) in.readObject();
                 reducer.addTask(RC);
                 
             } catch (IOException ex) {

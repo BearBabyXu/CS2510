@@ -5,28 +5,10 @@
  */
 package face_pull;
 
-import java.io.Serializable;
-import java.util.HashMap;
-
 /**
  *
- * @author Egan
+ * @author Rycemond
  */
-public class ReducerConfig implements Serializable{
-    private String File_Directory;
-    private HashMap<String, Integer> Table;
-    
-    public ReducerConfig(String _FILEDIRECTORY, HashMap<String, Integer> _TABLE) {
-        this.File_Directory = _FILEDIRECTORY;
-        this.Table = _TABLE;
-    }
-    
-    public String getFileDirectory() {
-        return File_Directory;
-    }
-    
-    public HashMap<String, Integer> getTable() {
-        return Table;
-    } 
+public class ReducerConfig {
     
 }
