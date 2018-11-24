@@ -10,5 +10,26 @@ package face_pull;
  * @author Egan
  */
 public class MapperHelper {
+    private String path;
+    private int id;
+    private String file;
+    private String ip;
+    private  int port;
+    
+    public MapperHelper(String path, int id, String file, String ip, int port){
+    this.path=path;
+    this.id=id;
+    this.file=file;
+    this.ip=ip;
+    this.port=port;
+    }
+    
+    public boolean callMapper(){
+        return true;
+    }
+    
+    public boolean initialize(){
+        return true;
+    }
     
 }

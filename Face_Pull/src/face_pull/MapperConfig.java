@@ -15,13 +15,13 @@ public class MapperConfig implements Serializable{
     private String File_Directory;
     private int Mapper_Count;
     private int Reducer_Count;
-    private int File_Index;
+    private int id;
     
-    public MapperConfig(String _FILEDIRECTORY, int _MAPPERCOUNT, int _REDUCERCOUNT, int _FILEINDEX) {
+    public MapperConfig(String _FILEDIRECTORY, int _MAPPERCOUNT, int _REDUCERCOUNT, int id) {
         this.File_Directory = _FILEDIRECTORY;
         this.Mapper_Count = _MAPPERCOUNT;
         this.Reducer_Count = _REDUCERCOUNT;
-        this.File_Index = _FILEINDEX;
+        this.id = id;
     }
     
     public String getFileDirectory() {
@@ -37,6 +37,6 @@ public class MapperConfig implements Serializable{
     }
     
     public int getFileIndex() {
-        return File_Index;
+        return id;
     }
 }
