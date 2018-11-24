@@ -84,7 +84,7 @@ public class Mapper {
         ArrayList<String> content = null;
         String File_Directory = MC.getFileDirectory();
         int Mapper_Count = MC.getMapperCount();
-        int File_Index = MC.getFileIndex();
+        int Mapper_Index = MC.getMapperID();
         
         File inFile = new File("src/face_pull/" + File_Directory);
         // Read assigned line in file
@@ -94,7 +94,7 @@ public class Mapper {
             int count = 1;
             while ((line = br.readLine()) != null) {
                 // read only lines which are responsible to this reducer
-                if( (count++) % Mapper_Count == File_Index)
+                if( (count++) % Mapper_Count == Mapper_Index)
                     content.add(line);
             }
         } catch (FileNotFoundException e) {

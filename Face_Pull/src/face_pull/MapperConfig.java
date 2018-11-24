@@ -13,30 +13,30 @@ import java.io.Serializable;
  */
 public class MapperConfig implements Serializable{
     private String File_Directory;
+    private int Mapper_ID;
     private int Mapper_Count;
     private int Reducer_Count;
-    private int File_Index;
     
-    public MapperConfig(String _FILEDIRECTORY, int _MAPPERCOUNT, int _REDUCERCOUNT, int _FILEINDEX) {
+    public MapperConfig(String _FILEDIRECTORY, int _MAPPERID, int _REDUCERCOUNT, int _MAPPERCOUNT) {
         this.File_Directory = _FILEDIRECTORY;
+        this.Mapper_ID = _MAPPERID;
         this.Mapper_Count = _MAPPERCOUNT;
         this.Reducer_Count = _REDUCERCOUNT;
-        this.File_Index = _FILEINDEX;
     }
     
     public String getFileDirectory() {
         return File_Directory;
     }
     
-    public int getMapperCount() {
-        return Mapper_Count;
+    public int getMapperID() {
+        return Mapper_ID;
     }
     
     public int getReducerCount() {
         return Reducer_Count;
     }
     
-    public int getFileIndex() {
-        return File_Index;
+    public int getMapperCount() {
+        return Mapper_Count;
     }
 }

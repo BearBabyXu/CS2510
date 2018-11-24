@@ -6,14 +6,21 @@
 package face_pull;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 /**
  *
- * @author Rycemond
+ * @author Egan
  */
-public class IndexReply implements Serializable{
+public class IndexReply implements Serializable {
+    private HashMap<String, LinkedList> Result;
     
-    public IndexReply() {
-        
+    public IndexReply(HashMap<String, LinkedList> _result) {      
+        this.Result = _result;
+    }
+    
+    public HashMap<String, LinkedList> getTable() {
+        return Result;
     }
 }
