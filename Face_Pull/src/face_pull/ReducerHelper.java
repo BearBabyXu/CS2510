@@ -10,5 +10,16 @@ package face_pull;
  * @author Egan
  */
 public class ReducerHelper {
+    private int id;
+    private String ip;
+    private int port;
     
+    public boolean callReducer(){
+        
+    return true;
+    }
+    
+    public boolean initialize(){
+        return true;
+    }
 }

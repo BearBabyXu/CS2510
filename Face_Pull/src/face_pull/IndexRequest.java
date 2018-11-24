@@ -11,9 +11,16 @@ import java.io.Serializable;
  *
  * @author Egan
  */
-public class IndexRequest implements Serializable {
-    
-    public IndexRequest() {
-        
+public class IndexRequest {
+
+    private String dir;
+
+    public IndexRequest(String dir) {
+        this.dir = dir;
+    }
+
+    public String getRequest() {
+        return this.dir;
+
     }
 }

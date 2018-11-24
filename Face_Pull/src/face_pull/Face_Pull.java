@@ -5,6 +5,9 @@
  */
 package face_pull;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+
 /**
  *
  * @author Egan
@@ -14,8 +17,17 @@ public class Face_Pull {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         // TODO code application logic here
+        
+        int port=8888;
+        
+        ServerSocket server=new ServerSocket(port);
+        while(true){
+        
+            new IndexMaster(server.accept()).start();
+        }
+        
     }
     
 }
