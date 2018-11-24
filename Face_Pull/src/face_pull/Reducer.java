@@ -49,9 +49,6 @@ public class Reducer {
             ReducerListener reducerListener = new ReducerListener(serverSock, this);
             reducerListener.start();
             
-            ReducerSender reducerSender = new ReducerSender(this);
-            reducerSender.start();
-            
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
         }
@@ -121,7 +118,6 @@ class ReducerThread extends Thread {
                 Logger.getLogger(MapperThread.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    }
 }
 
 class ReducerListener extends Thread {
