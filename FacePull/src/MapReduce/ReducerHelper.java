@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package facepull;
+package MapReduce;
 
 /**
  *
  * @author brantxu
  */
-public class IndexMasterServer {
+public class ReducerHelper {
     
 }
