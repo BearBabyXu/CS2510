@@ -7,7 +7,6 @@ package face_pull;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ import java.util.logging.Logger;
  *
  * @author Egan
  */
-public class Reducer {
+public class ReducerHelper {
     
     private final int PORT;
     private final String IP;
@@ -30,7 +29,7 @@ public class Reducer {
     private static Queue TASKS;
     private static Queue SENDS;
     
-    public Reducer(int _PORT, String _IP, int _ID) {
+    public ReducerHelper(int _PORT, String _IP, int _ID) {
         this.PORT = _PORT;
         this.IP = _IP;
         this.ID = _ID;
@@ -62,44 +61,25 @@ public class Reducer {
         return TASKS.isEmpty();
     }
     
-    public ReducerConfig getNextTask() {
-        return (ReducerConfig) TASKS.poll();
+    public MapperConfig getNextTask() {
+        return (MapperConfig) TASKS.poll();
     }
     
     public void addTask(ReducerConfig RC) {
         TASKS.add(RC);
     }
-    
-    public void reduce(ReducerConfig RC) {
-        HashMap<String, Integer> Table = RC.getTable();
-        
-        
-        
-    }
-    
-    public boolean sendIsEmpty() {
-        return SENDS.isEmpty();
-    }
-    
-    public IndexReply getNextSend() {
-        return (IndexReply) SENDS.poll();
-    }
-    
-    public void addSend(IndexReply IR) {
-        SENDS.add(IR);
-    }
 }
 
 class ReducerThread extends Thread {
-    private Reducer reducer;
+    private ReducerHelper reducer;
     
-    public ReducerThread(Reducer _reducer) {
+    public ReducerThread(ReducerHelper _reducer) {
         this.reducer = _reducer;
     }
     
     public void run() {
+        MapperConfig MC = null;
         ReducerConfig RC = null;
-        IndexReply IR = null;
         ArrayList<String> contents = null;
         HashMap<String, Integer> table = null;
         
@@ -109,8 +89,8 @@ class ReducerThread extends Thread {
                 TimeUnit.SECONDS.sleep(1);
                 if(!reducer.taskIsEmpty()) {
                     System.err.println("Task Detected!");
-                    RC = reducer.getNextTask();
-                    reducer.reduce(RC);
+                    MC = reducer.getNextTask();
+                    
                     
                     System.err.println("Finish Task!!");
                 }              
@@ -122,9 +102,9 @@ class ReducerThread extends Thread {
 
 class ReducerListener extends Thread {
     private ServerSocket serverSocket;
-    private Reducer reducer;
+    private ReducerHelper reducer;
     
-    public ReducerListener(ServerSocket _serverSocket, Reducer _reducer) {
+    public ReducerListener(ServerSocket _serverSocket, ReducerHelper _reducer) {
         this.serverSocket = _serverSocket;
         this.reducer = _reducer;
     }
@@ -151,40 +131,14 @@ class ReducerListener extends Thread {
 }
 
 class ReducerSender extends Thread {
-    private Reducer reducer;
+    private ReducerHelper reducer;
     
-    public ReducerSender(Reducer _reducer) {
+    public ReducerSender(ReducerHelper _reducer) {
         this.reducer = _reducer;
     }
     
     public void run() {
-        Socket socket = null;
-        ObjectOutputStream out = null;
-        IndexReply IR = null;
         
-        while(true) {
-            try {
-                socket = new Socket("127.0.0.1", 100000);
-                out = new ObjectOutputStream(socket.getOutputStream());
-            } catch (IOException ex) {
-                Logger.getLogger(MapperSender.class.getName()).log(Level.SEVERE, null, ex);
-            }
-       
-            while(true) {
-                try {
-                    TimeUnit.SECONDS.sleep(1);
-                    // If Send queue is not empty
-                    if(!reducer.sendIsEmpty()) {
-                        // send the message sequencially
-                        IR = reducer.getNextSend();
-                        out.writeObject(IR);
-                    }
-                
-                } catch (Exception ex) {
-                    System.err.println(ex.getMessage());
-                }
-            }
-        }
     }
 }
 

@@ -26,14 +26,14 @@ import java.util.logging.Logger;
  *
  * @author Egan
  */
-public class Mapper {
+public class MapperHelper {
     
     private final int PORT;
     private static int ID;
     private static Queue TASKS;
     private static Queue SENDS;
     
-    public Mapper(int _ID, int _PORT) {
+    public MapperHelper(int _ID, int _PORT) {
         this.ID = _ID;
         this.PORT = _PORT;
         this.TASKS = new LinkedList();
@@ -135,9 +135,9 @@ public class Mapper {
 }
 
 class MapperThread extends Thread {
-    private Mapper mapper;
+    private MapperHelper mapper;
     
-    public MapperThread(Mapper _mapper) {
+    public MapperThread(MapperHelper _mapper) {
         this.mapper = _mapper;
     }
     
@@ -169,9 +169,9 @@ class MapperThread extends Thread {
 
 class MapperListener extends Thread {
     private ServerSocket serverSocket;
-    private Mapper mapper;
+    private MapperHelper mapper;
     
-    public MapperListener(ServerSocket _serverSocket, Mapper _mapper) {
+    public MapperListener(ServerSocket _serverSocket, MapperHelper _mapper) {
         this.serverSocket = _serverSocket;
         this.mapper = _mapper;
     }
@@ -198,9 +198,9 @@ class MapperListener extends Thread {
 }
 
 class MapperSender extends Thread {
-    private Mapper mapper;
+    private MapperHelper mapper;
     
-    public MapperSender(Mapper _mapper) {
+    public MapperSender(MapperHelper _mapper) {
         this.mapper = _mapper;
     }
     
