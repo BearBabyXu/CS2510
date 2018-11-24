@@ -22,10 +22,12 @@ public class Client {
     public static void main(String args[]) {
         ObjectOutputStream out = null;
         ObjectInputStream in = null;
+        IndexRequest request = null;
         
         try {
             Socket socket = new Socket("127.0.0.1", 1111);
             Scanner read = new Scanner(System.in);
+            out = new ObjectOutputStream(socket.getOutputStream());
             
             while(true) {
                 System.out.print(">>> ");
@@ -35,11 +37,15 @@ public class Client {
                 if(req.toLowerCase().equals("index")) {
                     System.out.print(">>> ");
                     String file = read.nextLine();
-                    
-                    
+                    request = new IndexRequest(0);
+                    request.addFileDirectory(file);
+                    out.writeObject(request);
                 } else if (req.toLowerCase().equals("search")) {
                     System.out.print(">>> ");
                     String keyword = read.nextLine();
+                    request = new IndexRequest(1);
+                    request.addQuery(keyword);
+                    out.writeObject(request);
                 } else {
                     System.err.println("Unknown Request");
                 }                 
