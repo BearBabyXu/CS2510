@@ -11,16 +11,15 @@ import java.io.Serializable;
  *
  * @author Egan
  */
-public class IndexRequest {
+public class IndexRequest implements Serializable{
 
-    private String dir;
+    private String File_Directory;
 
-    public IndexRequest(String dir) {
-        this.dir = dir;
+    public IndexRequest(String _FileDirectory) {
+        this.File_Directory = _FileDirectory;
     }
 
-    public String getRequest() {
-        return this.dir;
-
+    public String getFileDirectory() {
+        return this.File_Directory;
     }
 }

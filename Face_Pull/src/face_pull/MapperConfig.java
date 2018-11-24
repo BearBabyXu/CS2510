@@ -17,8 +17,11 @@ public class MapperConfig implements Serializable{
     private int Reducer_Count;
     private int File_Index;
     
-    public MapperConfig() {
-        
+    public MapperConfig(String _FILEDIRECTORY, int _MAPPERCOUNT, int _REDUCERCOUNT, int _FILEINDEX) {
+        this.File_Directory = _FILEDIRECTORY;
+        this.Mapper_Count = _MAPPERCOUNT;
+        this.Reducer_Count = _REDUCERCOUNT;
+        this.File_Index = _FILEINDEX;
     }
     
     public String getFileDirectory() {

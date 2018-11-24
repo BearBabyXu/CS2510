@@ -5,13 +5,14 @@
  */
 package face_pull;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
  *
  * @author Egan
  */
-public class ReducerConfig {
+public class ReducerConfig implements Serializable{
     private String File_Directory;
     private HashMap<String, Integer> Table;
     
@@ -20,5 +21,12 @@ public class ReducerConfig {
         this.Table = _TABLE;
     }
     
+    public String getFileDirectory() {
+        return File_Directory;
+    }
+    
+    public HashMap<String, Integer> getTable() {
+        return Table;
+    } 
     
 }
