@@ -12,11 +12,12 @@ package facepull;
 public class MapperHelper {
     
     private int id;
+    String ip;
     private int port;
     private String file;
     private String absPath;
     
-    public MapperHelper(String file, int id, int port, String absPath){
+    public MapperHelper(String file, String absPath, int id, int port,){
         
     this.file=file;
     this.id=id;

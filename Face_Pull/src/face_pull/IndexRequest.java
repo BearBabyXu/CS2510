@@ -10,5 +10,16 @@ package face_pull;
  * @author Egan
  */
 public class IndexRequest {
-    
+
+    private String dir;
+
+    public IndexRequest(String dir) {
+        this.dir = dir;
+    }
+
+    public String getRequest() {
+        return this.dir;
+
+    }
+
 }
