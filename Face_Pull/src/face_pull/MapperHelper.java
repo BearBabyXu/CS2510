@@ -5,6 +5,9 @@
  */
 package face_pull;
 
+import java.io.IOException;
+import java.net.Socket;
+
 /**
  *
  * @author Egan
@@ -24,7 +27,9 @@ public class MapperHelper {
     this.port=port;
     }
     
-    public boolean callMapper(){
+    public boolean callMapper() throws IOException{
+        
+        Socket socket=new Socket(this.ip,port);
         return true;
     }
     

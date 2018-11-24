@@ -10,7 +10,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -29,6 +28,8 @@ public class Reducer {
     private static int ID;
     private static Queue TASKS;
     private static Queue SENDS;
+    private static HashMap<String, LinkedList> Result;
+    private boolean ReadyToSendReply = false;
     
     public Reducer(int _PORT, String _IP, int _ID) {
         this.PORT = _PORT;
@@ -49,7 +50,7 @@ public class Reducer {
             ReducerListener reducerListener = new ReducerListener(serverSock, this);
             reducerListener.start();
             
-            ReducerSender reducerSender = new ReducerSender(this);
+            ReducerSender reducerSender = new ReducerSender("127.0.0.1", 1111, this);
             reducerSender.start();
             
         } catch (Exception ex) {
@@ -65,19 +66,53 @@ public class Reducer {
         return TASKS.isEmpty();
     }
     
-    public ReducerConfig getNextTask() {
-        return (ReducerConfig) TASKS.poll();
+    public ReducerPackage getNextTask() {
+        return (ReducerPackage) TASKS.poll();
     }
     
-    public void addTask(ReducerConfig RC) {
+    public void addTask(ReducerPackage RC) {
         TASKS.add(RC);
     }
     
-    public void reduce(ReducerConfig RC) {
+    public HashMap<String, LinkedList> getTable() {
+        return Result;
+    }
+    
+    public void reduce(ReducerPackage RC) {
         HashMap<String, Integer> Table = RC.getTable();
+        LinkedList<Posting> tempList = null;
+        Posting posting = null;
         
-        
-        
+        int oldvalue = 0;
+        int newvalue = 0;
+        for(String word: Table.keySet()) {
+            newvalue = Table.get(word);
+            oldvalue = 0;
+            
+            // Key already exist
+            int index = -1;
+            if(Result.containsKey(word)) {
+                tempList = Result.get(word);
+                // If already exist in same file
+                for(Posting p: tempList) {
+                    if(p.getFileSource().equals(RC.getFileDirectory())) {
+                        // retrieve old value
+                        oldvalue = p.getOccurence();
+                        // retrive that key index
+                        index = tempList.indexOf(p);
+                        break;
+                    }
+                }           
+            }
+            posting = new Posting(RC.getFileDirectory(), newvalue+oldvalue);
+            // from different file
+            if(index != -1)
+                tempList.set(index, posting);
+            // from existing file
+            else
+                tempList.add(posting);             
+            Result.put(word, tempList);
+        }      
     }
     
     public boolean sendIsEmpty() {
@@ -91,6 +126,10 @@ public class Reducer {
     public void addSend(IndexReply IR) {
         SENDS.add(IR);
     }
+    
+    public boolean readyToSendReply() {
+        return ReadyToSendReply;
+    }
 }
 
 class ReducerThread extends Thread {
@@ -101,10 +140,8 @@ class ReducerThread extends Thread {
     }
     
     public void run() {
-        ReducerConfig RC = null;
+        ReducerPackage RC = null;
         IndexReply IR = null;
-        ArrayList<String> contents = null;
-        HashMap<String, Integer> table = null;
         
         while(true) {
             try {
@@ -114,7 +151,6 @@ class ReducerThread extends Thread {
                     System.err.println("Task Detected!");
                     RC = reducer.getNextTask();
                     reducer.reduce(RC);
-                    
                     System.err.println("Finish Task!!");
                 }              
             } catch (InterruptedException ex) {
@@ -136,13 +172,13 @@ class ReducerListener extends Thread {
     public void run() {
         Socket socket = null;
         ObjectInputStream in = null;
-        ReducerConfig RC = null;
+        ReducerPackage RC = null;
         
         while(true) {
             try {
                 socket = serverSocket.accept();
                 in = new ObjectInputStream(socket.getInputStream());
-                RC = (ReducerConfig) in.readObject();
+                RC = (ReducerPackage) in.readObject();
                 reducer.addTask(RC);
                 
             } catch (IOException ex) {
@@ -156,9 +192,13 @@ class ReducerListener extends Thread {
 
 class ReducerSender extends Thread {
     private Reducer reducer;
+    private String IndexMasterIP;
+    private int IndexMasterPort;
     
-    public ReducerSender(Reducer _reducer) {
+    public ReducerSender(String _INDEXMASTERIP, int _INDEXMASTERPORT, Reducer _reducer) {
         this.reducer = _reducer;
+        this.IndexMasterIP = _INDEXMASTERIP;
+        this.IndexMasterPort = _INDEXMASTERPORT;
     }
     
     public void run() {
@@ -168,7 +208,7 @@ class ReducerSender extends Thread {
         
         while(true) {
             try {
-                socket = new Socket("127.0.0.1", 100000);
+                socket = new Socket(IndexMasterIP, IndexMasterPort);
                 out = new ObjectOutputStream(socket.getOutputStream());
             } catch (IOException ex) {
                 Logger.getLogger(MapperSender.class.getName()).log(Level.SEVERE, null, ex);
@@ -178,9 +218,9 @@ class ReducerSender extends Thread {
                 try {
                     TimeUnit.SECONDS.sleep(1);
                     // If Send queue is not empty
-                    if(!reducer.sendIsEmpty()) {
+                    if(reducer.readyToSendReply()) {
                         // send the message sequencially
-                        IR = reducer.getNextSend();
+                        IR = new IndexReply(reducer.getTable());
                         out.writeObject(IR);
                     }
                 
