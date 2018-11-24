@@ -5,10 +5,20 @@
  */
 package face_pull;
 
+import java.util.HashMap;
+
 /**
  *
  * @author Egan
  */
 public class ReducerConfig {
+    private String File_Directory;
+    private HashMap<String, Integer> Table;
+    
+    public ReducerConfig(String _FILEDIRECTORY, HashMap<String, Integer> _TABLE) {
+        this.File_Directory = _FILEDIRECTORY;
+        this.Table = _TABLE;
+    }
+    
     
 }

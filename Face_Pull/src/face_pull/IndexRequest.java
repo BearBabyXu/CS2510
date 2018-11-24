@@ -5,10 +5,15 @@
  */
 package face_pull;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Egan
  */
-public class IndexRequest {
+public class IndexRequest implements Serializable {
     
+    public IndexRequest() {
+        
+    }
 }

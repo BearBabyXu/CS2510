@@ -9,7 +9,6 @@ package face_pull;
  *
  * @author Egan
  */
-public class IndexMaster {
-    
+public class Server {
     
 }
