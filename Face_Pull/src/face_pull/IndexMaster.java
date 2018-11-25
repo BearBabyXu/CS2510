@@ -22,6 +22,7 @@ public class IndexMaster extends Thread{
     private Socket socket;
     private static LinkedList<IndexRequest> indexJobQueue;
     private ArrayList<String> serverList;
+    private ArrayList<ReducerDes> reducerList;
     private static int currentServer=1;
     private int mapperPort=9000;
     private int reducerPort=9001;
@@ -77,8 +78,18 @@ public class IndexMaster extends Thread{
             reducerHelperList.add(tempReducerHelper);
         }
         
+        for(ReducerHelper rh:reducerHelperList){
+        
+            rh.askReducerPort();
+        }
+        
+        for(ReducerHelper rh:reducerHelperList){
+            reducerList.add(new ReducerDes(rh.getIp(),rh.getReducerPort()));
+        }
+        
+
         for(MapperHelper mh:mapperHelperList){
-            mh.initialize(numReducers, serverList);
+            mh.initialize(numReducers, reducerList);
         }
         
         for(ReducerHelper rh:reducerHelperList){
