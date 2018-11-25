@@ -19,12 +19,12 @@ public class MapperConfig implements Serializable {
    private String ip;
    private int port;
    
-   private ArrayList<String> reducerList;
+   private ArrayList<ReducerDes> reducerList;
    private int numMappers;
    private int numReducer;
     
     
-    public MapperConfig(MapperHelper mh, int numReducer, ArrayList<String> reducerList) {
+    public MapperConfig(MapperHelper mh, int numReducer, ArrayList<ReducerDes> reducerList) {
         
             this.path=mh.getPath();
             this.id=mh.getId();
@@ -57,7 +57,7 @@ public class MapperConfig implements Serializable {
         return this.port;
     }
     
-    public ArrayList<String> getReducerList(){
+    public ArrayList<ReducerDes> getReducerList(){
     return this.reducerList;
     
     }

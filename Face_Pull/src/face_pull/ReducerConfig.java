@@ -15,6 +15,7 @@ public class ReducerConfig {
     private int port;
     private int totalMappers;
     
+    
     public ReducerConfig(int id, String ip, int port, int totalMappers){
         this.id=id;
         this.ip=ip;

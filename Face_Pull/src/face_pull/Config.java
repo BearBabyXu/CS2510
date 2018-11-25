@@ -18,6 +18,8 @@ public class Config {
         this.config = null;
     }
     
+    
+    
     public void addConfig(Object config) {
         if(type == 0) {
             // MapperConfig
@@ -34,7 +36,7 @@ public class Config {
             return (MapperConfig) config;
         } else if(type == 1) {
             return (ReducerConfig) config;
-        } else {
+        } else{
             return config;
         }
     }

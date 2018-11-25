@@ -22,6 +22,7 @@ public class MapperHelper {
     private  int port;
     private int numMappers;
      private static ObjectOutputStream output;
+   
     
     public MapperHelper(String path, int id, String file, String ip, int port, int numMapper){
     this.path=path;
@@ -32,7 +33,9 @@ public class MapperHelper {
     this.numMappers=numMapper;
     }
     
-    private boolean callMapper(MapperConfig config) throws IOException{
+   
+    
+    private boolean callMapper(Config config) throws IOException{
         
         Socket socket=new Socket(this.ip,port);
         output= new ObjectOutputStream(socket.getOutputStream());
@@ -40,13 +43,18 @@ public class MapperHelper {
         return true;
     }
     
-    public boolean initialize(int numReducer, ArrayList<String> reducerList) throws IOException{
+    public boolean initialize(int numReducer, ArrayList<ReducerDes> reducerList) throws IOException{
         
-        this.callMapper(new MapperConfig(this,numReducer, reducerList));
+        Config temp=new Config(0);
+        temp.addConfig(new MapperConfig(this,numReducer, reducerList));
+        this.callMapper(temp);
         
         
         return true;
     }
+    
+    
+    
     
     public String getPath(){
     return this.path;
@@ -71,5 +79,7 @@ public class MapperHelper {
     public int getNumMappers(){
     return this.numMappers;
     }
+    
+ 
     
 }
