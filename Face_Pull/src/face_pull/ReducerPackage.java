@@ -16,9 +16,13 @@ public class ReducerPackage implements Serializable{
     private String File_Directory;
     private HashMap<String, Integer> Table;
     
-    public ReducerPackage(String _FILEDIRECTORY, HashMap<String, Integer> _TABLE) {
-        this.File_Directory = _FILEDIRECTORY;
-        this.Table = _TABLE;
+    public ReducerPackage() {
+        this.File_Directory = null;
+        this.Table = new HashMap<>();
+    }
+    
+    public void setFilePath(String filePath) {
+        File_Directory = filePath;
     }
     
     public String getFileDirectory() {
@@ -29,4 +33,13 @@ public class ReducerPackage implements Serializable{
         return Table;
     } 
     
+    public boolean addPosting(String key, int value) {
+        if(Table.containsKey(key)) {
+            System.err.printf("Duplicate Key: %s", key);
+            return false;
+        } else {
+            Table.put(key, value);
+            return true;
+        }
+    }
 }
