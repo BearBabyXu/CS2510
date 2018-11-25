@@ -20,6 +20,7 @@ public class ReducerHelper {
     private int port;
     private int totalMappers;
     private ObjectOutputStream output;
+    private int reducerPort;
 
     public ReducerHelper(int id, String ip,int port,int tatalMappers) {
         this.id = id;
@@ -27,6 +28,15 @@ public class ReducerHelper {
         this.port=port;
     }
     
+     public boolean bindPort(int reducerPort){
+        this.reducerPort=reducerPort;
+        return true;
+    }
+     
+        public int getReducerPort(){
+        return this.reducerPort;
+    }
+     
     private boolean callReducer(ReducerConfig config) throws IOException{
         
         Socket socket=new Socket(this.ip,this.port);
