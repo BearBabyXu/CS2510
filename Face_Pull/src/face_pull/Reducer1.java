@@ -44,10 +44,10 @@ public class Reducer1 {
             final ServerSocket serverSock = new ServerSocket(PORT);
             System.out.printf("Reducer #%d is up and running\n", ID);
             
-            ReducerThread reducerThread = new ReducerThread(this);
+            ReducerThread1 reducerThread = new ReducerThread1(this);
             reducerThread.start();
             
-            ReducerListener reducerListener = new ReducerListener(serverSock, this);
+            ReducerListener1 reducerListener = new ReducerListener1(serverSock, this);
             reducerListener.start();
             
             ReducerSender reducerSender = new ReducerSender("127.0.0.1", 1111, this);
@@ -132,10 +132,10 @@ public class Reducer1 {
     }
 }
 
-class ReducerThread extends Thread {
+class ReducerThread1 extends Thread {
     private Reducer1 reducer;
     
-    public ReducerThread(Reducer1 _reducer) {
+    public ReducerThread1(Reducer1 _reducer) {
         this.reducer = _reducer;
     }
     
@@ -160,11 +160,11 @@ class ReducerThread extends Thread {
     }
 }
 
-class ReducerListener extends Thread {
+class ReducerListener1 extends Thread {
     private ServerSocket serverSocket;
     private Reducer1 reducer;
     
-    public ReducerListener(ServerSocket _serverSocket, Reducer1 _reducer) {
+    public ReducerListener1(ServerSocket _serverSocket, Reducer1 _reducer) {
         this.serverSocket = _serverSocket;
         this.reducer = _reducer;
     }
