@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  *
  * @author Egan
  */
-public class Reducer {
+public class Reducer extends Thread {
     // Reducer Configuration
     private final ReducerConfig config;
     
@@ -34,14 +34,14 @@ public class Reducer {
     
     public Reducer(ReducerConfig config) {
         this.config = config;
-        this.reducerPort = config.getReducerPort();
-        this.masterIP = config.getIp();
-        this.masterPort = config.getPort();
+        this.reducerPort = config.getPort();
+        this.masterIP = config.getMasterIp();
+        this.masterPort = config.getMasterPort();
         this.mapperCount = config.getTotalMapper();
         
     }
     
-    public void start() {
+    public void run() {
         
         try {
             final ServerSocket serverSocket = new ServerSocket(reducerPort);
