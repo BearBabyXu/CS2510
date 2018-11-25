@@ -30,18 +30,18 @@ public class Client {
             out = new ObjectOutputStream(socket.getOutputStream());
             
             while(true) {
-                System.out.print(">>> ");
+                System.out.print("Type >>> ");
                 String req = read.nextLine();
                 if(req.toLowerCase().equals("exit"))
                     break;
                 if(req.toLowerCase().equals("index")) {
-                    System.out.print(">>> ");
+                    System.out.print("Requ >>> ");
                     String file = read.nextLine();
                     request = new IndexRequest(0);
                     request.addFileDirectory(file);
                     out.writeObject(request);
                 } else if (req.toLowerCase().equals("search")) {
-                    System.out.print(">>> ");
+                    System.out.print("Requ >>> ");
                     String keyword = read.nextLine();
                     request = new IndexRequest(1);
                     request.addQuery(keyword);
