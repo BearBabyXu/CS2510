@@ -13,35 +13,60 @@ import java.util.ArrayList;
  * @author Egan
  */
 public class MapperConfig implements Serializable {
-    private String File_Directory;
-    private int Mapper_ID;
-    private int Mapper_Count;
-    private int Reducer_Count;
-    private ArrayList<String> reducerList;
+   private String path;
+   private int id;
+   private String name;
+   private String ip;
+   private int port;
+   
+   private ArrayList<String> reducerList;
+   private int numMappers;
+   private int numReducer;
     
-    public MapperConfig(String _FILEDIRECTORY, int _MAPPERID, int _REDUCERCOUNT, int _MAPPERCOUNT) {
-        this.File_Directory = _FILEDIRECTORY;
-        this.Mapper_ID = _MAPPERID;
-        this.Mapper_Count = _MAPPERCOUNT;
-        this.Reducer_Count = _REDUCERCOUNT;
-    }
     
-    public String getFileDirectory() {
-        return File_Directory;
-    }
-    
-    public int getMapperID() {
-        return Mapper_ID;
-    }
-    
-    public int getReducerCount() {
-        return Reducer_Count;
-    }
-    public int getMapperCount() {
-        return Mapper_Count;
+    public MapperConfig(MapperHelper mh, int numReducer, ArrayList<String> reducerList) {
+        
+            this.path=mh.getPath();
+            this.id=mh.getId();
+            this.name=mh.getName();
+            this.ip=mh.getIp();
+            this.port=mh.getPort();
+            this.reducerList=reducerList;
+            this.numMappers=mh.getNumMappers();
+            this.numReducer=numReducer;
+
     }
     
-    public ArrayList<String> getReducers(){
-        return this.reducerList;
+    public String getPath(){
+        return this.path;
     }
+    
+    public int getId(){
+        return this.id;
+    }
+    
+    public String getName(){
+        return this.name;
+    }
+    
+    public String getIp(){
+        return this.ip;
+    }
+    
+    public int getPort(){
+        return this.port;
+    }
+    
+    public ArrayList<String> getReducerList(){
+    return this.reducerList;
+    
+    }
+  
+    public int getCountMappers(){
+        return this.numMappers;
+    }
+    
+    public int getCountReducers(){
+    return this.numReducer;
+        }
 }

@@ -7,6 +7,7 @@
 package face_pull;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -40,7 +41,7 @@ public class IndexMaster extends Thread{
         this.socket=socket;
     }
     
-    public boolean jobInitialization(IndexRequest request){
+    public boolean jobInitialization(IndexRequest request) throws IOException{
         
         String dir=request.getFileDirectory();
         
@@ -48,15 +49,18 @@ public class IndexMaster extends Thread{
         
         Long totalLength=0L;
         
+        int totalMappers=0;
+        
         for(File e:folder.listFiles()){
             Long tempLength=e.length();
             totalLength+=tempLength;
             
-            int numMapperSiblings=(int)(tempLength/(1024*1024*2)+1);
+            int numMappers=(int)(tempLength/(1024*1024*2)+1);
+            totalMappers+=numMappers;
             
-            for(int i=1;i<=numMapperSiblings;i++){
+            for(int i=1;i<=numMappers;i++){
                 
-                MapperHelper tempMaperHelper=new MapperHelper(e.getAbsolutePath(),i,e.getName(),serverList.get(currentServer % 9),9000);
+                MapperHelper tempMaperHelper=new MapperHelper(e.getAbsolutePath(),i,e.getName(),serverList.get(currentServer % 9),mapperPort,numMappers);
                 currentServer++;
                 mapperHelperList.add(tempMaperHelper);
                 
@@ -66,12 +70,25 @@ public class IndexMaster extends Thread{
         }
         
         
-        int numReducerSiblings=(int)(totalLength/(1024*1024*3)+1);
-        for(int i=1;i<=numReducerSiblings;i++){
-            ReducerHelper tempReducerHelper=new ReducerHelper(i,serverList.get(currentServer % 9),reducerPort);
+        int numReducers=(int)(totalLength/(1024*1024*3)+1);
+        for(int i=1;i<=numReducers;i++){
+            ReducerHelper tempReducerHelper=new ReducerHelper(i,serverList.get(currentServer % 9),reducerPort,totalMappers);
             currentServer++;
             reducerHelperList.add(tempReducerHelper);
         }
+        
+        for(MapperHelper mh:mapperHelperList){
+            mh.initialize(numReducers, serverList);
+        }
+        
+        for(ReducerHelper rh:reducerHelperList){
+        
+            rh.initialize();
+        }
+        
+        
+        
+        
         
         
     

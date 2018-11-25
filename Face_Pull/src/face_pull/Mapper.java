@@ -82,9 +82,12 @@ public class Mapper {
     
     public ArrayList readContent(MapperConfig MC) {
         ArrayList<String> content = null;
-        String File_Directory = MC.getFileDirectory();
-        int Mapper_Count = MC.getMapperCount();
-        int Mapper_Index = MC.getMapperID();
+      //  String File_Directory = MC.getFileDirectory();
+      String File_Directory = MC.getPath();
+       // int Mapper_Count = MC.getMapperCount();
+       int Mapper_Count = MC.getCountMappers();
+       // int Mapper_Index = MC.getMapperID();
+       int Mapper_Index = MC.getId();
         
         File inFile = new File("src/face_pull/" + File_Directory);
         // Read assigned line in file
@@ -156,7 +159,8 @@ class MapperThread extends Thread {
                     MC = mapper.getNextTask();
                     contents = mapper.readContent(MC);
                     table = mapper.mapping(contents);
-                    RC = new ReducerPackage(MC.getFileDirectory(), table);
+                  //  RC = new ReducerPackage(MC.getFileDirectory(), table);
+                  RC = new ReducerPackage(MC.getPath(), table);
                     mapper.addSend(RC);
                     System.err.println("Finish Task!!");
                 }              
