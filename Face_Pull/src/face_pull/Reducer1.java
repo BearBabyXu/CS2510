@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  *
  * @author Egan
  */
-public class Reducer {
+public class Reducer1 {
     
     private final int PORT;
     private final String IP;
@@ -31,7 +31,7 @@ public class Reducer {
     private static HashMap<String, LinkedList> Result;
     private boolean ReadyToSendReply = false;
     
-    public Reducer(int _PORT, String _IP, int _ID) {
+    public Reducer1(int _PORT, String _IP, int _ID) {
         this.PORT = _PORT;
         this.IP = _IP;
         this.ID = _ID;
@@ -133,9 +133,9 @@ public class Reducer {
 }
 
 class ReducerThread extends Thread {
-    private Reducer reducer;
+    private Reducer1 reducer;
     
-    public ReducerThread(Reducer _reducer) {
+    public ReducerThread(Reducer1 _reducer) {
         this.reducer = _reducer;
     }
     
@@ -162,9 +162,9 @@ class ReducerThread extends Thread {
 
 class ReducerListener extends Thread {
     private ServerSocket serverSocket;
-    private Reducer reducer;
+    private Reducer1 reducer;
     
-    public ReducerListener(ServerSocket _serverSocket, Reducer _reducer) {
+    public ReducerListener(ServerSocket _serverSocket, Reducer1 _reducer) {
         this.serverSocket = _serverSocket;
         this.reducer = _reducer;
     }
@@ -191,11 +191,11 @@ class ReducerListener extends Thread {
 }
 
 class ReducerSender extends Thread {
-    private Reducer reducer;
+    private Reducer1 reducer;
     private String IndexMasterIP;
     private int IndexMasterPort;
     
-    public ReducerSender(String _INDEXMASTERIP, int _INDEXMASTERPORT, Reducer _reducer) {
+    public ReducerSender(String _INDEXMASTERIP, int _INDEXMASTERPORT, Reducer1 _reducer) {
         this.reducer = _reducer;
         this.IndexMasterIP = _INDEXMASTERIP;
         this.IndexMasterPort = _INDEXMASTERPORT;

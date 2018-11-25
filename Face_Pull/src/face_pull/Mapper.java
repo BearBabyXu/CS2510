@@ -10,15 +10,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,89 +22,65 @@ import java.util.logging.Logger;
  * @author Egan
  */
 public class Mapper {
+    // Mapper Configuration
+    private final MapperConfig config;
     
-    private final int PORT;
-    private static int ID;
-    private static Queue TASKS;
-    private static Queue SENDS;
+    // element for mapping work
+    private int mapperID;
+    private final String filePath;
+    private final int mapperCount;
+    private static ArrayList<String> contents;
+    private static HashMap<String, Integer> mappedTable;
     
-    public Mapper(int _ID, int _PORT) {
-        this.ID = _ID;
-        this.PORT = _PORT;
-        this.TASKS = new LinkedList();
-        this.SENDS = new LinkedList();
+    // elements for sending work
+    private final String reducerIP;
+    private final int reducerPort;
+    private final ArrayList<String> reducerList;
+    
+    public Mapper(MapperConfig config) {
+        // initialization
+        this.config = config;
+        this.mapperID = config.getId();
+        this.mapperCount = config.getCountMappers();
+        this.reducerIP = config.getIp();
+        this.reducerPort = config.getPort();
+        this.filePath = config.getPath();
+        this.reducerList = config.getReducerList();
     }
     
-    void start() {
+    public void start() {
+        // mapper process
+        readContent();
+        mapping();
         
-        try {
-            final ServerSocket serverSock = new ServerSocket(PORT);
-            System.out.printf("Mapper #%d is up and running\n", ID);
-            
-            // Listener for incoming request
-            MapperListener mapperListener = new MapperListener(serverSock, this);
-            mapperListener.start();
-            
-            // Processing incoming task
-            MapperThread mapperThread = new MapperThread(this);
-            mapperThread.start();
-            
-            // Sending Thread
-            MapperSender mapperSender = new MapperSender(this);
-            mapperSender.start();
-            
-            
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
-    }   
-    
-    public int getMapperID() {
-        return ID;
     }
     
-    public boolean taskIsEmpty() {
-        return TASKS.isEmpty();
-    }
-    
-    public MapperConfig getNextTask() {
-        return (MapperConfig) TASKS.poll();
-    }
-    
-    public void addTask(MapperConfig MC) {
-        TASKS.add(MC);
-    }
-    
-    public ArrayList readContent(MapperConfig MC) {
-        ArrayList<String> content = null;
-      //  String File_Directory = MC.getFileDirectory();
-      String File_Directory = MC.getPath();
-       // int Mapper_Count = MC.getMapperCount();
-       int Mapper_Count = MC.getCountMappers();
-       // int Mapper_Index = MC.getMapperID();
-       int Mapper_Index = MC.getId();
+    private boolean readContent() {
         
-        File inFile = new File("src/face_pull/" + File_Directory);
+        File inFile = new File("src/face_pull/" + filePath);
         // Read assigned line in file
-        content = new ArrayList<>();
+        ArrayList<String> contents = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(inFile))) {
             String line;
             int count = 1;
             while ((line = br.readLine()) != null) {
-                // read only lines which are responsible to this reducer
-                if( (count++) % Mapper_Count == Mapper_Index)
-                    content.add(line);
+                // read only lines which are responsible to this mapper
+                if( (count++) % mapperCount == mapperID)
+                    contents.add(line);
             }
         } catch (FileNotFoundException e) {
             System.err.println(e.getMessage());
+            return false;
         } catch (IOException e) {
             System.err.println(e.getMessage());
+            return false;
         }        
         
-        return content;
+        this.contents = contents;
+        return true;
     }
     
-    public HashMap<String, Integer> mapping(ArrayList<String> contents) {
+    private void mapping() {
         HashMap<String, Integer> table = new HashMap<>();
         // mapping index into table <word, occurence>
         for(String line: contents) {
@@ -121,120 +92,46 @@ public class Mapper {
             }
         }
         
-        return table;
+        this.mappedTable = table;
     }
     
-    public boolean sendIsEmpty() {
-        return SENDS.isEmpty();
-    }
-    
-    public void addSend(ReducerPackage RC) {
-        SENDS.add(RC);
-    }
-    
-    public ReducerPackage getNextSend() {
-        return (ReducerPackage) SENDS.poll();
-    }
-}
-
-class MapperThread extends Thread {
-    private Mapper mapper;
-    
-    public MapperThread(Mapper _mapper) {
-        this.mapper = _mapper;
-    }
-    
-    public void run() {
-        MapperConfig MC = null;
-        ReducerPackage RC = null;
-        ArrayList<String> contents = null;
-        HashMap<String, Integer> table = null;
+    private void shuffle() {
+        // how many existing reducer
+        int reducerCount = this.reducerList.size();
+        // this array contains total numbers of packages that are being sent to each reducer
+        ReducerPackage[] packages = new ReducerPackage[reducerCount];
         
-        while(true) {
-            try {
-                // Check Task queue periodically 
-                TimeUnit.SECONDS.sleep(1);
-                if(!mapper.taskIsEmpty()) {
-                    System.err.println("Task Detected!");
-                    MC = mapper.getNextTask();
-                    contents = mapper.readContent(MC);
-                    table = mapper.mapping(contents);
-                  //  RC = new ReducerPackage(MC.getFileDirectory(), table);
-                  RC = new ReducerPackage(MC.getPath(), table);
-                    mapper.addSend(RC);
-                    System.err.println("Finish Task!!");
-                }              
-            } catch (InterruptedException ex) {
-                Logger.getLogger(MapperThread.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        // set filepath of each package
+        for(ReducerPackage pack: packages)
+            pack.setFilePath(filePath);
+        
+        int hashCode = 0;
+        for(String word: mappedTable.keySet()) {
+            // go over each word and seperate into each package
+            hashCode = word.hashCode();
+            packages[hashCode%reducerCount].addPosting(word, mappedTable.get(word));
         }
-    }
-}
-
-class MapperListener extends Thread {
-    private ServerSocket serverSocket;
-    private Mapper mapper;
-    
-    public MapperListener(ServerSocket _serverSocket, Mapper _mapper) {
-        this.serverSocket = _serverSocket;
-        this.mapper = _mapper;
-    }
-    
-    public void run() {
-        Socket socket = null;
-        ObjectInputStream in = null;
-        MapperConfig MC = null;
         
-        while(true) {
-            try {
-                socket = serverSocket.accept();
-                in = new ObjectInputStream(socket.getInputStream());
-                MC = (MapperConfig) in.readObject();
-                mapper.addTask(MC);
-                
-            } catch (IOException ex) {
-                Logger.getLogger(MapperListener.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(MapperListener.class.getName()).log(Level.SEVERE, null, ex);
-            }        
-        }    
-    }
-}
-
-class MapperSender extends Thread {
-    private Mapper mapper;
-    
-    public MapperSender(Mapper _mapper) {
-        this.mapper = _mapper;
     }
     
-    public void run() {
+    private boolean sendToReducer(ReducerPackage[] packages) {
+        int reducerCount = packages.length;
         Socket socket = null;
         ObjectOutputStream out = null;
-        ReducerPackage RC = null;
+        ReducerPackage pack = null;
         
-        while(true) {
-            try {
-                socket = new Socket("127.0.0.1", 9999);
+        try {
+            for(int i = 0; i < reducerCount; i++) {
+                // Connecting to each Reducer
+                socket = new Socket(reducerIP, reducerPort);
+                System.out.printf("Mapper #d, connected to Reducer...\n", mapperID);
                 out = new ObjectOutputStream(socket.getOutputStream());
-            } catch (IOException ex) {
-                Logger.getLogger(MapperSender.class.getName()).log(Level.SEVERE, null, ex);
             }
-       
-            while(true) {
-                try {
-                    TimeUnit.SECONDS.sleep(1);
-                    // If Send queue is not empty
-                    if(!mapper.sendIsEmpty()) {
-                        // send the message sequencially
-                        RC = mapper.getNextSend();
-                        out.writeObject(RC);
-                    }
-                
-                } catch (Exception ex) {
-                    System.err.println(ex.getMessage());
-                }
-            }
+            
+        } catch (IOException ex) {
+            Logger.getLogger(Mapper.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        return false;
     }
 }
