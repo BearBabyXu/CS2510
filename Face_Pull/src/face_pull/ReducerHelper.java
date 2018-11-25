@@ -59,6 +59,7 @@ public class ReducerHelper {
         Socket socket=new Socket(this.ip,this.port);
         output=new ObjectOutputStream(socket.getOutputStream());
         output.writeObject(config);
+        socket.close();
         
         
     return true;

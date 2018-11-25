@@ -40,6 +40,7 @@ public class MapperHelper {
         Socket socket=new Socket(this.ip,port);
         output= new ObjectOutputStream(socket.getOutputStream());
         output.writeObject(config);
+        socket.close();
         return true;
     }
     

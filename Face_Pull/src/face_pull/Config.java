@@ -18,7 +18,9 @@ public class Config {
         this.config = null;
     }
     
-    
+    public int getType(){
+        return this.type;
+    }
     
     public void addConfig(Object config) {
         if(type == 0) {

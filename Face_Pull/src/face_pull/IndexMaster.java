@@ -25,7 +25,7 @@ public class IndexMaster extends Thread{
     private ArrayList<ReducerDes> reducerList;
     private static int currentServer=1;
     private int mapperPort=9000;
-    private int reducerPort=9001;
+    private int reducerPort=9000;
     
     
     
@@ -87,16 +87,19 @@ public class IndexMaster extends Thread{
             reducerList.add(new ReducerDes(rh.getIp(),rh.getReducerPort()));
         }
         
+        
+        
+         for(ReducerHelper rh:reducerHelperList){
+        
+            rh.initialize();
+        }
+        
 
         for(MapperHelper mh:mapperHelperList){
             mh.initialize(numReducers, reducerList);
         }
         
-        for(ReducerHelper rh:reducerHelperList){
-        
-            rh.initialize();
-        }
-        
+       
         
         
         

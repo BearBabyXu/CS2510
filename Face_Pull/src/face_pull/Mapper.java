@@ -35,7 +35,7 @@ public class Mapper {
     // elements for sending work
     private final String reducerIP;
     private final int reducerPort;
-    private final ArrayList<String> reducerList;
+    private final ArrayList<ReducerDes> reducerList;
     
     public Mapper(MapperConfig config) {
         // initialization
