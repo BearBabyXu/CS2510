@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  *
  * @author Egan
  */
-public class Mapper {
+public class Mapper extends Thread{
     // Mapper Configuration
     private final MapperConfig config;
     
@@ -48,11 +48,11 @@ public class Mapper {
         this.reducerList = config.getReducerList();
     }
     
-    public void start() {
+    public void run() {
         // mapper process
         readContent();
         mapping();
-        
+        shuffle();
     }
     
     private boolean readContent() {
@@ -95,7 +95,7 @@ public class Mapper {
         this.mappedTable = table;
     }
     
-    private void shuffle() {
+    private boolean shuffle() {
         // how many existing reducer
         int reducerCount = this.reducerList.size();
         // this array contains total numbers of packages that are being sent to each reducer
@@ -112,6 +112,7 @@ public class Mapper {
             packages[hashCode%reducerCount].addPosting(word, mappedTable.get(word));
         }
         
+        return sendToReducer(packages);
     }
     
     private boolean sendToReducer(ReducerPackage[] packages) {
@@ -123,15 +124,21 @@ public class Mapper {
         try {
             for(int i = 0; i < reducerCount; i++) {
                 // Connecting to each Reducer
-                socket = new Socket(reducerIP, reducerPort);
-                System.out.printf("Mapper #d, connected to Reducer...\n", mapperID);
+                socket = new Socket(reducerList.get(i).getIp(), reducerList.get(i).getPort());
+                System.out.printf("Mapper #d, connected to Reducer on %s:%d \n", mapperID, reducerList.get(i).getIp(), reducerList.get(i).getPort());
                 out = new ObjectOutputStream(socket.getOutputStream());
+                
+                // send package to assigned Reducer
+                out.writeObject(packages[i]);
+                System.out.println("Package Sent.");
+                out.close();
             }
             
         } catch (IOException ex) {
             Logger.getLogger(Mapper.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }
         
-        return false;
+        return true;
     }
 }

@@ -7,7 +7,7 @@ package face_pull;
 
 /**
  *
- * @author Rycemond
+ * @author Egan
  */
 public class ReducerConfig {
      private int id;
