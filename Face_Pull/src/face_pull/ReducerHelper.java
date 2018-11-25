@@ -22,15 +22,20 @@ public class ReducerHelper {
 
     private int id;
     private String ip;
-    private int port;
+    private int WorkerServerPort;
     private int totalMappers;
     private ObjectOutputStream output;
     private int reducerPort;
+    private int masterPort;
+    private String masterIp;
+    
 
-    public ReducerHelper(int id, String ip,int port,int tatalMappers) {
+    public ReducerHelper(int id, String ip,int port,int tatalMappers,String masterIp, int masterPort) {
         this.id = id;
         this.ip=ip;
-        this.port=port;
+        this.WorkerServerPort=port;
+        this.masterIp=masterIp;
+        this.masterPort=masterPort;
     }
     
     public String getIp(){
@@ -44,7 +49,7 @@ public class ReducerHelper {
     }
         
     public boolean askReducerPort() throws IOException{
-        Socket socket =new Socket(this.ip,this.port);
+        Socket socket =new Socket(this.ip,this.WorkerServerPort);
         ObjectOutputStream portAskingOutput=new ObjectOutputStream(socket.getOutputStream());
         portAskingOutput.writeObject(new Config(2));
         
@@ -56,7 +61,7 @@ public class ReducerHelper {
      
     private boolean callReducer(Config config) throws IOException{
         
-        Socket socket=new Socket(this.ip,this.port);
+        Socket socket=new Socket(this.ip,this.WorkerServerPort);
         output=new ObjectOutputStream(socket.getOutputStream());
         output.writeObject(config);
         socket.close();
@@ -67,7 +72,7 @@ public class ReducerHelper {
     
     public boolean initialize() throws IOException{
         Config temp=new Config(1);
-        temp.addConfig(new ReducerConfig(this.id,this.ip,this.reducerPort,this.totalMappers));
+        temp.addConfig(new ReducerConfig(this.id,this.ip,this.reducerPort,this.totalMappers,this.masterIp,this.masterPort));
         this.callReducer(temp);
         
         return true;

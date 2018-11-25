@@ -14,14 +14,26 @@ public class ReducerConfig {
     private String ip;
     private int port;
     private int totalMappers;
+    private int masterPort;
+    private String masterIp;
     
     
-    public ReducerConfig(int id, String ip, int port, int totalMappers){
+    public ReducerConfig(int id, String ip, int port, int totalMappers, String masterIp,int masterPort){
         this.id=id;
         this.ip=ip;
         this.port=port;
         this.totalMappers=totalMappers;
+        this.masterPort=masterPort;
+        this.masterIp=masterIp;
+        
     
+    }
+    public String getMasterIp(){
+        return this.masterIp;
+    }
+    
+    public int getMasterPort(){
+        return this.port;
     }
     
    public int getId(){

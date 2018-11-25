@@ -24,8 +24,10 @@ public class IndexMaster extends Thread{
     private ArrayList<String> serverList;
     private ArrayList<ReducerDes> reducerList;
     private static int currentServer=1;
-    private int mapperPort=9000;
+    private int WorkerServerPort=9000;
     private int reducerPort=9000;
+    private String masterIp="136.142.227.5";
+    private int resultPort=9002;
     
     
     
@@ -61,7 +63,7 @@ public class IndexMaster extends Thread{
             
             for(int i=1;i<=numMappers;i++){
                 
-                MapperHelper tempMaperHelper=new MapperHelper(e.getAbsolutePath(),i,e.getName(),serverList.get(currentServer % 9),mapperPort,numMappers);
+                MapperHelper tempMaperHelper=new MapperHelper(e.getAbsolutePath(),i,e.getName(),serverList.get(currentServer % 9),WorkerServerPort,numMappers);
                 currentServer++;
                 mapperHelperList.add(tempMaperHelper);
                 
@@ -73,7 +75,7 @@ public class IndexMaster extends Thread{
         
         int numReducers=(int)(totalLength/(1024*1024*3)+1);
         for(int i=1;i<=numReducers;i++){
-            ReducerHelper tempReducerHelper=new ReducerHelper(i,serverList.get(currentServer % 9),reducerPort,totalMappers);
+            ReducerHelper tempReducerHelper=new ReducerHelper(i,serverList.get(currentServer % 9),reducerPort,totalMappers,masterIp, resultPort);
             currentServer++;
             reducerHelperList.add(tempReducerHelper);
         }
