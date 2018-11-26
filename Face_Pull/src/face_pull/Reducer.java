@@ -7,10 +7,12 @@ package face_pull;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,8 +27,10 @@ public class Reducer extends Thread {
     // element for reducer process
     private int mapperCount;
     private int reducerPort;
-    private LinkedList<ReducerPackage> tasks = new LinkedList<>();
-    private HashMap<String, LinkedList<Posting>> result = new HashMap<>();
+    private LinkedList<ReducerPackage> tasks;
+    private HashMap<String, LinkedList<Posting>> result;
+    private int finishedReducer;
+    private boolean tasksDone;
     
     // element for sending process
     private final String masterIP;
@@ -37,14 +41,13 @@ public class Reducer extends Thread {
         this.reducerPort = config.getPort();
         this.masterIP = config.getMasterIp();
         this.masterPort = config.getMasterPort();
-        //this.mapperCount = config.getTotalMapper();
-        System.out.println("here");
-        this.mapperCount = 1;
-        
+        this.mapperCount = config.getTotalMapper();  
+        this.tasksDone = false;
+        this.finishedReducer = 0;
     }
     
     public void run() {
-            
+        
         try {
             final ServerSocket serverSocket = new ServerSocket(reducerPort);
             System.out.printf("Reducer on %s:%d is on and runing \n", serverSocket.getInetAddress(), serverSocket.getLocalPort());
@@ -67,10 +70,6 @@ public class Reducer extends Thread {
     }
     
     public ReducerPackage getTask() {
-        if(tasks.equals(null))
-            System.out.println("task null");
-        if(tasks.poll().equals(null))
-            System.out.println("poll null");
         return tasks.poll();
     }
     
@@ -86,12 +85,34 @@ public class Reducer extends Thread {
         result.put(key, value);
     }
     
+    public int getMasterPort() {
+        return masterPort;
+    }
+    
+    public String getMasterIP() {
+        return masterIP;
+    }
+    
+    public HashMap<String, LinkedList<Posting>> getResult() {
+        return result;
+    }
+    
     public void printResult() {
         for(String word: result.keySet()) {
             for(Posting posting: result.get(word)) {
                 System.out.printf("%s: %d - %s", word, posting.getOccurence(), posting.getFileSource());
             }
         }
+    }
+    
+    public boolean checkTasksDone() {
+        return tasksDone;
+    }
+    
+    public void finishReducing() {
+        finishedReducer += 1;
+        if(finishedReducer == mapperCount)
+            tasksDone = true;
     }
 }
 
@@ -107,14 +128,17 @@ class ReducerListener extends Thread {
     public void run() {
         Socket socket = null;
         ObjectInputStream in = null;
+        ObjectOutputStream out = null;
         ReducerPackage pack = null;
         int packCount = 0;
         int mapperCount = reducer.getMapperCount();
         ReducerThread[] threads = new ReducerThread[mapperCount];
         
         // thread initialization
-        for(ReducerThread thread: threads)
-            thread = new ReducerThread(reducer);
+        int id = 1;
+        for(ReducerThread thread: threads) {
+            thread = new ReducerThread(reducer, id++);
+        }
         
         // loop until receive matching numbers of mapper count
         while(packCount < mapperCount) {
@@ -138,6 +162,34 @@ class ReducerListener extends Thread {
         }
         
         System.out.println("Reducer Finish Receiving.");
+        
+        while(!reducer.checkTasksDone()) {
+            System.out.print("Reducing...");
+            try {
+                TimeUnit.SECONDS.sleep(1);
+                System.out.print(".");               
+            } catch (InterruptedException ex) {
+                Logger.getLogger(ReducerListener.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        System.out.print(" DOND \n ");
+        System.err.println("Saving Inverting Index");
+        
+        /*
+        try {
+            // Send result back to IndexMaster
+            Socket replySocket = new Socket(reducer.getMasterIP(), reducer.getMasterPort());
+            out = new ObjectOutputStream(replySocket.getOutputStream());
+            out.writeObject(reducer.getResult());
+            System.out.println("Reducer Finish all Tasks");
+            out.close();
+            
+        } catch (IOException ex) {
+            Logger.getLogger(ReducerListener.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        */
+          
         this.interrupt();
     }
 }
@@ -146,19 +198,20 @@ class ReducerThread extends Thread {
     private Reducer reducer;
     private ReducerPackage pack;
     private String filePath;
+    private int id;
     
-    public ReducerThread(Reducer reducer) {
+    public ReducerThread(Reducer reducer, int num) {
         this.reducer = reducer;
+        this.pack = reducer.getTask();
+        this.filePath = pack.getFileDirectory();
+        this.id = num;
     }
     
     public void run() {
-        this.pack = reducer.getTask();
-        this.filePath = pack.getFileDirectory();
         HashMap<String, Integer> Table = new HashMap<>();      
         LinkedList<Posting> tempList = null;
         Posting posting = null;
-        
-        
+             
         int oldvalue = 0;
         int newvalue = 0;
         for(String word: Table.keySet()) {
@@ -192,6 +245,8 @@ class ReducerThread extends Thread {
         
         System.out.println("Reducer Thread Finished");
         reducer.printResult();
+        // If this is the last reducer
+        reducer.finishReducing();       
         this.interrupt();
     }
 }

@@ -1,4 +1,8 @@
-
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package face_pull;
 
 import java.io.BufferedReader;
@@ -53,7 +57,7 @@ public class Mapper extends Thread{
     
     private boolean readContent() {
         
-        File inFile = new File(filePath);
+        File inFile = new File("src/face_pull/" + filePath);
         // Read assigned line in file
         ArrayList<String> contents = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(inFile))) {
@@ -70,25 +74,62 @@ public class Mapper extends Thread{
         } catch (IOException e) {
             System.err.println(e.getMessage());
             return false;
-        }        
+        }
+              
+        ArrayList<String> managedData = new ArrayList<>();
+        // data management
+        for(String line: contents) {
+            // remove space
+            for(String word: line.split(" ")) {
+                // eliminate non-alphebet character 
+                String newword = "";
+                for(int c = 0; c < word.length(); c++)
+                    if(Character.isAlphabetic(word.charAt(c)))
+                        newword += word.charAt(c);
+                // change every terms into lowerCase character
+                newword = newword.toLowerCase();
+                managedData.add(newword);
+            }
+        }
         
-        this.contents = contents;
+        this.contents = managedData;
+        
         return true;
     }
     
     private void mapping() {
+        
+        HashMap<String, Integer> table = new HashMap<>();
+        // mapping function
+        for(String word: contents) {
+            int value = 1;
+            if(table.containsKey(word))
+                value += table.get(word);
+            table.put(word, value);
+        }
+        
+        this.mappedTable = table;
+        
+        /*
         HashMap<String, Integer> table = new HashMap<>();
         // mapping index into table <word, occurence>
         for(String line: contents) {
             for(String word: line.split(" ")) {
+                // eliminate non-alphebet character 
+                String newword = "";
+                for(int c = 0; c < word.length(); c++)
+                    if(Character.isAlphabetic(word.charAt(c)))
+                        newword += word.charAt(c);
+                newword = newword.toLowerCase();
                 int value = 1;
-                if(table.containsKey(word))
-                    value += table.get(word);
-                table.put(word, value);
+                if(table.containsKey(newword))
+                    value += table.get(newword);
+                table.put(newword, value);
             }
         }
         
         this.mappedTable = table;
+*/
     }
     
     private boolean shuffle() {
@@ -98,8 +139,10 @@ public class Mapper extends Thread{
         ReducerPackage[] packages = new ReducerPackage[reducerCount];
         
         // set filepath of each package
-        for(ReducerPackage pack: packages)
+        for(ReducerPackage pack: packages) {
+            pack = new ReducerPackage();
             pack.setFilePath(filePath);
+        }
         
         int hashCode = 0;
         for(String word: mappedTable.keySet()) {
