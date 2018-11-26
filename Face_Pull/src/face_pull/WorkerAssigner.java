@@ -25,7 +25,7 @@ public class WorkerAssigner extends Thread {
     private static int currentPort = startPort;
 
     public WorkerAssigner(Socket socket) {
-
+        this.socket=socket;
     }
 
     public void run() {
@@ -33,13 +33,16 @@ public class WorkerAssigner extends Thread {
         try {
             input = new ObjectInputStream(socket.getInputStream());
             Config config = (Config) input.readObject();
+            System.out.println("Config received: "+config.toString());
 
             switch (config.getType()) {
                 case 0:
-                   
+                    new Mapper((MapperConfig)config.getConfig()).start();
                     break;
 
                 case 1:
+                    System.out.println("call outside");
+                    new Reducer((ReducerConfig)config.getConfig()).start();
                     break;
 
                 case 2:

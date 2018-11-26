@@ -5,11 +5,14 @@
  */
 package face_pull;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Egan
  */
-public class Config {
+public class Config implements Serializable {
+
     private int type;
     private Object config;
     
@@ -33,6 +36,8 @@ public class Config {
         }
     }
     
+   
+    
     public Object getConfig() {
         if(type == 0) {
             return (MapperConfig) config;
@@ -43,4 +48,17 @@ public class Config {
         }
     }
     
+    public String toString(){
+    if(type == 0) {
+            // MapperConfig
+            this.config = (MapperConfig) config;
+            return this.config.toString();
+        } else if(type == 1) {
+            this.config = (ReducerConfig) config;
+            return this.config.toString();
+        } else {
+            return "wrong type";
+        }
+    
+    }
 }

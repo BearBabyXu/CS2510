@@ -5,11 +5,13 @@
  */
 package face_pull;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Egan
  */
-public class ReducerConfig {
+public class ReducerConfig implements Serializable{
      private int id;
     private String ip;
     private int port;
@@ -27,6 +29,10 @@ public class ReducerConfig {
         this.masterIp=masterIp;
         
     
+    }
+    
+    public String toString(){
+        return "ReducerConfig id"+this.id+"port:"+this.port;
     }
     public String getMasterIp(){
         return this.masterIp;

@@ -19,7 +19,7 @@ public class IndexRequest implements Serializable{
 
     public IndexRequest(int type) {
         this.type = type;
-        this.File_Directory = null;
+        this.File_Directory =null;
         this.query = null;
     }
 
@@ -41,5 +41,10 @@ public class IndexRequest implements Serializable{
     
     public int getType() {
         return type;
+    }
+    
+    public String toString(){
+        return "IndexRequest type:"+ this.type+ " dir:"+this.File_Directory;
+    
     }
 }

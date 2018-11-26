@@ -12,7 +12,8 @@ import java.util.ArrayList;
  *
  * @author Egan
  */
-public class MapperConfig implements Serializable {
+public class MapperConfig  implements Serializable {
+  
    private String path;
    private int id;
    private String name;
@@ -35,6 +36,10 @@ public class MapperConfig implements Serializable {
             this.numMappers=mh.getNumMappers();
             this.numReducer=numReducer;
 
+    }
+    
+    public String toString(){
+        return "MapperConfig path:"+this.path+"id"+this.id;
     }
     
     public String getPath(){

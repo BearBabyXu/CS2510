@@ -25,8 +25,8 @@ public class Reducer extends Thread {
     // element for reducer process
     private int mapperCount;
     private int reducerPort;
-    private LinkedList<ReducerPackage> tasks;
-    private HashMap<String, LinkedList<Posting>> result;
+    private LinkedList<ReducerPackage> tasks = new LinkedList<>();
+    private HashMap<String, LinkedList<Posting>> result = new HashMap<>();
     
     // element for sending process
     private final String masterIP;
@@ -37,12 +37,14 @@ public class Reducer extends Thread {
         this.reducerPort = config.getPort();
         this.masterIP = config.getMasterIp();
         this.masterPort = config.getMasterPort();
-        this.mapperCount = config.getTotalMapper();
+        //this.mapperCount = config.getTotalMapper();
+        System.out.println("here");
+        this.mapperCount = 1;
         
     }
     
     public void run() {
-        
+            
         try {
             final ServerSocket serverSocket = new ServerSocket(reducerPort);
             System.out.printf("Reducer on %s:%d is on and runing \n", serverSocket.getInetAddress(), serverSocket.getLocalPort());
@@ -65,6 +67,10 @@ public class Reducer extends Thread {
     }
     
     public ReducerPackage getTask() {
+        if(tasks.equals(null))
+            System.out.println("task null");
+        if(tasks.poll().equals(null))
+            System.out.println("poll null");
         return tasks.poll();
     }
     
@@ -143,11 +149,11 @@ class ReducerThread extends Thread {
     
     public ReducerThread(Reducer reducer) {
         this.reducer = reducer;
-        this.pack = reducer.getTask();
-        this.filePath = pack.getFileDirectory();
     }
     
     public void run() {
+        this.pack = reducer.getTask();
+        this.filePath = pack.getFileDirectory();
         HashMap<String, Integer> Table = new HashMap<>();      
         LinkedList<Posting> tempList = null;
         Posting posting = null;

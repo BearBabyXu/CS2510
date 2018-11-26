@@ -25,30 +25,34 @@ public class Client {
         IndexRequest request = null;
         
         try {
-            Socket socket = new Socket("127.0.0.1", 1111);
+            Socket socket = new Socket("127.0.0.1", 8888);
             Scanner read = new Scanner(System.in);
             out = new ObjectOutputStream(socket.getOutputStream());
             
             while(true) {
                 System.out.print("Type >>> ");
-                String req = read.nextLine();
+                //String req = read.nextLine();
+                String req = "index";
                 if(req.toLowerCase().equals("exit"))
                     break;
                 if(req.toLowerCase().equals("index")) {
                     System.out.print("Requ >>> ");
-                    String file = read.nextLine();
-                    request = new IndexRequest(0);
-                    request.addFileDirectory(file);
+                    //String file = read.nextLine();
+                    String file = "/Users/brantxu/Documents/GitHub/CS2510/Face_Pull/files";
+                   request = new IndexRequest(0);
+                   request.addFileDirectory(file);
+                    //request.addFileDirectory(file);
                     out.writeObject(request);
                 } else if (req.toLowerCase().equals("search")) {
                     System.out.print("Requ >>> ");
                     String keyword = read.nextLine();
-                    request = new IndexRequest(1);
+                   request = new IndexRequest(1);
                     request.addQuery(keyword);
                     out.writeObject(request);
                 } else {
                     System.err.println("Unknown Request");
-                }                 
+                }   
+                break;
             }       
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);

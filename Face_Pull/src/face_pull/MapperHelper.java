@@ -38,10 +38,16 @@ public class MapperHelper {
     private boolean callMapper(Config config) throws IOException{
         
         Socket socket=new Socket(this.ip,port);
+        
         output= new ObjectOutputStream(socket.getOutputStream());
         output.writeObject(config);
         socket.close();
         return true;
+    }
+    
+    public String toString(){
+        return "MapperHelper info path:"+this.path+" id: "+this.id+"ip:"+this.ip+" numMapper:"+this.numMappers;
+    
     }
     
     public boolean initialize(int numReducer, ArrayList<ReducerDes> reducerList) throws IOException{

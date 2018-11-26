@@ -5,11 +5,13 @@
  */
 package face_pull;
 
+import java.io.Serializable;
+
 /**
  *
  * @author brantxu
  */
-public class ReducerDes {
+public class ReducerDes implements Serializable{
     private String ip;
     private int port;
     
@@ -17,6 +19,10 @@ public class ReducerDes {
         this.ip=ip;
         this.port=port;
              
+    }
+    
+    public String toString(){
+        return "ReducerDes ip:"+this.ip+"port"+this.port;
     }
     
     public String getIp(){

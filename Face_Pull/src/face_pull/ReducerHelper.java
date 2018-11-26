@@ -38,6 +38,10 @@ public class ReducerHelper {
         this.masterPort=masterPort;
     }
     
+    public String toString(){
+       return "MapperHelper info id:"+this.id+" ip:" +this.ip+"reducerPort:"+this.reducerPort;
+    
+    }
     public String getIp(){
         return this.ip;
     }
@@ -50,7 +54,9 @@ public class ReducerHelper {
         
     public boolean askReducerPort() throws IOException{
         Socket socket =new Socket(this.ip,this.WorkerServerPort);
+        System.out.println("ip:"+this.ip+" Port:"+this.WorkerServerPort);
         ObjectOutputStream portAskingOutput=new ObjectOutputStream(socket.getOutputStream());
+        System.out.println("ip:"+this.ip+" Port:"+this.WorkerServerPort);
         portAskingOutput.writeObject(new Config(2));
         
         DataInputStream dInput=new DataInputStream(socket.getInputStream());
