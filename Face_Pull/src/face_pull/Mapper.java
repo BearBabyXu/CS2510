@@ -89,8 +89,11 @@ public class Mapper extends Thread{
                     if(Character.isAlphabetic(word.charAt(c)))
                         newword += word.charAt(c);
                 // change every terms into lowerCase character
-                newword = newword.toLowerCase();
-                managedData.add(newword);
+                // if it's not empty, then save this term
+                if(!newword.equals("")) {
+                    newword = newword.toLowerCase();
+                    managedData.add(newword);
+                }
             }
         }
         
@@ -128,11 +131,19 @@ public class Mapper extends Thread{
         int hashCode = 0;
         for(String word: mappedTable.keySet()) {
             // go over each word and seperate into each package
-            hashCode = Math.abs(word.hashCode()); 
-            int packIndex=hashCode%reducerCount;
-            //System.out.println("packIndex:"+packIndex + "reduceCount: " + reducerCount);
-            //System.out.println(hashCode + "," + reducerCount + "====== " + hashCode%reducerCount + " ====== " + packages[hashCode%reducerCount]);
-            packages[packIndex].addPosting(word, mappedTable.get(word));
+            // depends on the first letter of the word
+            // char % reducerCount
+            if(word.length() >= 1) {
+                // At least one character
+                if(Character.isAlphabetic(word.charAt(0))) {
+                    // At least first character has to be alphabet
+                    // then seperate into Reducer according to hashCode of first letter
+                    hashCode = Math.abs(word.substring(0, 1).hashCode()); 
+                    int reducerIndex = hashCode%reducerCount;
+                    packages[reducerIndex].addPosting(word, mappedTable.get(word));
+                    packages[reducerIndex].addStartLetter(word.substring(0, 1));
+                }
+            }
         }
         
         return sendToReducer(packages);

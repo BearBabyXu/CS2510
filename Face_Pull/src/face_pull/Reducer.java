@@ -13,6 +13,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
@@ -124,15 +125,22 @@ public class Reducer extends Thread {
             tasksDone = true;
     }
     
-    public void writeToFile() throws IOException {
-        File f = new File("FileOut" + reducerID + ".txt");
-        BufferedWriter br = new BufferedWriter(new FileWriter(f, true));
-        for(String word: result.keySet()) {
-            br.write(word + "-");
-            for(Posting post: result.get(word)) {
-                br.write(post.getOccurence() + "," + post.getFileSource()+";");
+    public void writeToFile(ArrayList<String> startLetters) throws IOException {
+        
+        // tranverse every element in HashMap<Word, LinkerList<File, occurence>>
+        for(String start: startLetters) {
+            File f = new File("index/" + start + ".txt");
+            BufferedWriter br = new BufferedWriter(new FileWriter(f, true));
+            for(String word: result.keySet()) {
+                if(word.substring(0, 1).equals(start)) {
+                    br.write(word + "-");
+                    for(Posting post: result.get(word)) {
+                        br.write(post.getOccurence() + "," + post.getFileSource() + ";");
+                    }
+                    br.write("\n");
+                }
             }
-            br.write("\n");
+            br.close();
         }
     }
 }
@@ -195,7 +203,7 @@ class ReducerListener extends Thread {
               
         System.err.println("Saving Inverting Index");   
         try {
-            reducer.writeToFile();
+            reducer.writeToFile(pack.getStartLetters());
         } catch (IOException ex) {
             Logger.getLogger(ReducerListener.class.getName()).log(Level.SEVERE, null, ex);
         }

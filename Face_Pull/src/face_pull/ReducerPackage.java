@@ -6,6 +6,7 @@
 package face_pull;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -15,6 +16,7 @@ import java.util.HashMap;
 public class ReducerPackage implements Serializable{
     private String File_Directory;
     private HashMap<String, Integer> Table;
+    private ArrayList<String> letters;
     
     public ReducerPackage() {
         this.File_Directory = null;
@@ -41,5 +43,14 @@ public class ReducerPackage implements Serializable{
             Table.put(key, value);
             return true;
         }
+    }
+    
+    public void addStartLetter(String letter) {
+        if(!letters.contains(letter))
+            letters.add(letter);
+    }
+    
+    public ArrayList<String> getStartLetters() {
+        return letters;
     }
 }
