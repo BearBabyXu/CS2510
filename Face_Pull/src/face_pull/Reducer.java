@@ -7,6 +7,7 @@ package face_pull;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -107,7 +108,6 @@ public class Reducer extends Thread {
     }
     
     public void printResult() {
-        System.out.println("=======Result=======" + result.isEmpty());
         for(String word: result.keySet()) {
             for(Posting posting: result.get(word)) {
                 System.out.printf("%s: %d - %s", word, posting.getOccurence(), posting.getFileSource());
@@ -127,6 +127,7 @@ public class Reducer extends Thread {
     
     public void writeToFile(ArrayList<String> startLetters) throws IOException {
         
+        // 1. ========== Save as .txt ========
         // tranverse every element in HashMap<Word, LinkerList<File, occurence>>
         for(String start: startLetters) {
             File f = new File("index/" + start + ".txt");
@@ -140,8 +141,23 @@ public class Reducer extends Thread {
                     br.write("\n");
                 }
             }
-            br.close();
+            br.close();        
         }
+        
+        /*********** Another Saving Method **********/
+        /*
+        // 2. ========== Save as HashMap ========
+        for(String start: startLetters) {
+            HashMap<String, LinkedList<Posting>> outMap = new HashMap<>();
+            for(String word: result.keySet()) {
+                outMap.put(word, result.get(word));
+            }
+            File f = new File("index/" + start + ".bin");
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(f));
+            out.writeObject(outMap); 
+            out.close();
+        }
+*/
     }
 }
 
