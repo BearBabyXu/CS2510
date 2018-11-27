@@ -27,15 +27,16 @@ public class Mapper extends Thread{
     
     // element for mapping work
     private int mapperID;
-    private final String filePath;
-    private final int mapperCount;
-    private static ArrayList<String> contents;
-    private static HashMap<String, Integer> mappedTable;
+    private String filePath;
+    private int mapperCount;
+    private ArrayList<String> contents;
+    private HashMap<String, Integer> mappedTable;
     
     // elements for sending work
-    private final String reducerIP;
-    private final int reducerPort;
-    private final ArrayList<ReducerDes> reducerList;
+    private String reducerIP;
+    private  int reducerPort;
+    private String fileName;
+    private  ArrayList<ReducerDes> reducerList;
     
     public Mapper(MapperConfig config) {
         // initialization
@@ -45,19 +46,22 @@ public class Mapper extends Thread{
         this.reducerIP = config.getIp();
         this.reducerPort = config.getPort();
         this.filePath = config.getPath();
+        this.fileName = config.getName();
         this.reducerList = config.getReducerList();
+        this.mappedTable = new HashMap<>();
     }
     
     public void run() {
         // mapper process
-        readContent();
-        mapping();
+        contents = readContent();
+        mappedTable = mapping();
         shuffle();
+        this.interrupt();
     }
     
-    private boolean readContent() {
+    private ArrayList<String> readContent() {
         
-        File inFile = new File("src/face_pull/" + filePath);
+        File inFile = new File(filePath);
         // Read assigned line in file
         ArrayList<String> contents = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(inFile))) {
@@ -70,10 +74,8 @@ public class Mapper extends Thread{
             }
         } catch (FileNotFoundException e) {
             System.err.println(e.getMessage());
-            return false;
         } catch (IOException e) {
             System.err.println(e.getMessage());
-            return false;
         }
               
         ArrayList<String> managedData = new ArrayList<>();
@@ -92,15 +94,14 @@ public class Mapper extends Thread{
             }
         }
         
-        this.contents = managedData;
-        
-        return true;
+        return managedData;
     }
     
-    private void mapping() {
+    private HashMap<String, Integer> mapping() {
         
         HashMap<String, Integer> table = new HashMap<>();
         // mapping function
+
         for(String word: contents) {
             int value = 1;
             if(table.containsKey(word))
@@ -108,28 +109,7 @@ public class Mapper extends Thread{
             table.put(word, value);
         }
         
-        this.mappedTable = table;
-        
-        /*
-        HashMap<String, Integer> table = new HashMap<>();
-        // mapping index into table <word, occurence>
-        for(String line: contents) {
-            for(String word: line.split(" ")) {
-                // eliminate non-alphebet character 
-                String newword = "";
-                for(int c = 0; c < word.length(); c++)
-                    if(Character.isAlphabetic(word.charAt(c)))
-                        newword += word.charAt(c);
-                newword = newword.toLowerCase();
-                int value = 1;
-                if(table.containsKey(newword))
-                    value += table.get(newword);
-                table.put(newword, value);
-            }
-        }
-        
-        this.mappedTable = table;
-*/
+        return table;
     }
     
     private boolean shuffle() {
@@ -139,20 +119,25 @@ public class Mapper extends Thread{
         ReducerPackage[] packages = new ReducerPackage[reducerCount];
         
         // set filepath of each package
-        for(ReducerPackage pack: packages) {
-            pack = new ReducerPackage();
-            pack.setFilePath(filePath);
+        for(int i = 0; i < reducerCount; i++) {
+            System.out.println(reducerCount + "," + i);
+            packages[i] = new ReducerPackage();
+            packages[i].setFilePath(fileName);
         }
         
         int hashCode = 0;
         for(String word: mappedTable.keySet()) {
             // go over each word and seperate into each package
-            hashCode = word.hashCode();
-            packages[hashCode%reducerCount].addPosting(word, mappedTable.get(word));
+            hashCode = Math.abs(word.hashCode()); 
+            int packIndex=hashCode%reducerCount;
+            //System.out.println("packIndex:"+packIndex + "reduceCount: " + reducerCount);
+            //System.out.println(hashCode + "," + reducerCount + "====== " + hashCode%reducerCount + " ====== " + packages[hashCode%reducerCount]);
+            packages[packIndex].addPosting(word, mappedTable.get(word));
         }
         
         return sendToReducer(packages);
     }
+    
     
     private boolean sendToReducer(ReducerPackage[] packages) {
         int reducerCount = packages.length;
@@ -163,8 +148,9 @@ public class Mapper extends Thread{
         try {
             for(int i = 0; i < reducerCount; i++) {
                 // Connecting to each Reducer
+                System.out.println(reducerList.get(i).getIp() + " / " + reducerList.get(i).getPort());
                 socket = new Socket(reducerList.get(i).getIp(), reducerList.get(i).getPort());
-                System.out.printf("Mapper #d, connected to Reducer on %s:%d \n", mapperID, reducerList.get(i).getIp(), reducerList.get(i).getPort());
+                System.out.printf("Mapper #%d-%s, connected to Reducer on %s:%d \n", mapperID, filePath, reducerList.get(i).getIp(), reducerList.get(i).getPort());
                 out = new ObjectOutputStream(socket.getOutputStream());
                 
                 // send package to assigned Reducer

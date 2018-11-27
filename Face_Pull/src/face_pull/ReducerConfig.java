@@ -32,7 +32,7 @@ public class ReducerConfig implements Serializable{
     }
     
     public String toString(){
-        return "ReducerConfig id"+this.id+"port:"+this.port;
+        return "ReducerConfig id"+this.id+"port:"+this.port+" total Mapper:"+this.totalMappers;
     }
     public String getMasterIp(){
         return this.masterIp;
@@ -55,6 +55,6 @@ public class ReducerConfig implements Serializable{
    }
    
    public int getTotalMapper(){
-       return this.getTotalMapper();
+       return this.totalMappers;
    }
 }

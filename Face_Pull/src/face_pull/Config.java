@@ -56,8 +56,10 @@ public class Config implements Serializable {
         } else if(type == 1) {
             this.config = (ReducerConfig) config;
             return this.config.toString();
-        } else {
-            return "wrong type";
+        } else if(type==2){
+            return "Asking port";
+        }else{
+            return "Wrong type";
         }
     
     }

@@ -30,16 +30,17 @@ public class ReducerHelper {
     private String masterIp;
     
 
-    public ReducerHelper(int id, String ip,int port,int tatalMappers,String masterIp, int masterPort) {
+    public ReducerHelper(int id, String ip,int port,int totalMappers,String masterIp, int masterPort) {
         this.id = id;
         this.ip=ip;
         this.WorkerServerPort=port;
         this.masterIp=masterIp;
         this.masterPort=masterPort;
+        this.totalMappers=totalMappers;
     }
     
     public String toString(){
-       return "MapperHelper info id:"+this.id+" ip:" +this.ip+"reducerPort:"+this.reducerPort;
+       return "MapperHelper info id:"+this.id+" ip:" +this.ip+"reducerPort:"+this.reducerPort+"Total Mapper:"+this.totalMappers;
     
     }
     public String getIp(){

@@ -92,13 +92,16 @@ public class IndexMaster extends Thread{
         int totalMappers=0;
         
         for(File e:folder.listFiles()){
+            if(!e.getAbsolutePath().endsWith("txt")){
+                continue;
+            }
             Long tempLength=e.length();
             totalLength+=tempLength;
             
             int numMappers=(int)(tempLength/(1024*1024*2)+1);
             totalMappers+=numMappers;
             
-            for(int i=1;i<=numMappers;i++){
+            for(int i=0;i<numMappers;i++){
                 
                 MapperHelper tempMaperHelper=new MapperHelper(e.getAbsolutePath(),i,e.getName(),serverList.get(currentServer % numServer),WorkerServerPort,numMappers);
                 currentServer++;
@@ -112,6 +115,7 @@ public class IndexMaster extends Thread{
         
         int numReducers=(int)(totalLength/(1024*1024*3)+1);
         for(int i=1;i<=numReducers;i++){
+            
             ReducerHelper tempReducerHelper=new ReducerHelper(i,serverList.get(currentServer % numServer),WorkerServerPort2,totalMappers,masterIp, resultPort);
             currentServer++;
             reducerHelperList.add(tempReducerHelper);

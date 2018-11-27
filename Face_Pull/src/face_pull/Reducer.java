@@ -5,6 +5,9 @@
  */
 package face_pull;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -35,6 +38,7 @@ public class Reducer extends Thread {
     // element for sending process
     private final String masterIP;
     private final int masterPort;
+    private int reducerID;
     
     public Reducer(ReducerConfig config) {
         this.config = config;
@@ -44,6 +48,10 @@ public class Reducer extends Thread {
         this.mapperCount = config.getTotalMapper();  
         this.tasksDone = false;
         this.finishedReducer = 0;
+        this.tasks = new LinkedList<>();
+        this.result = new HashMap<>();
+        this.reducerID = config.getId();
+        
     }
     
     public void run() {
@@ -98,6 +106,7 @@ public class Reducer extends Thread {
     }
     
     public void printResult() {
+        System.out.println("=======Result=======" + result.isEmpty());
         for(String word: result.keySet()) {
             for(Posting posting: result.get(word)) {
                 System.out.printf("%s: %d - %s", word, posting.getOccurence(), posting.getFileSource());
@@ -113,6 +122,18 @@ public class Reducer extends Thread {
         finishedReducer += 1;
         if(finishedReducer == mapperCount)
             tasksDone = true;
+    }
+    
+    public void writeToFile() throws IOException {
+        File f = new File("FileOut" + reducerID + ".txt");
+        BufferedWriter br = new BufferedWriter(new FileWriter(f, true));
+        for(String word: result.keySet()) {
+            br.write(word + "-");
+            for(Posting post: result.get(word)) {
+                br.write(post.getOccurence() + "," + post.getFileSource()+";");
+            }
+            br.write("\n");
+        }
     }
 }
 
@@ -134,10 +155,9 @@ class ReducerListener extends Thread {
         int mapperCount = reducer.getMapperCount();
         ReducerThread[] threads = new ReducerThread[mapperCount];
         
-        // thread initialization
-        int id = 1;
-        for(ReducerThread thread: threads) {
-            thread = new ReducerThread(reducer, id++);
+        // thread initialization      
+        for(int id = 0; id < threads.length; id++) {
+            threads[id] = new ReducerThread(reducer, id);
         }
         
         // loop until receive matching numbers of mapper count
@@ -152,7 +172,7 @@ class ReducerListener extends Thread {
                 System.out.printf("Reducer on %s:%d ", socket.getInetAddress(), socket.getLocalPort());
                 System.out.printf("received %d/%d packages from Mapper\n", packCount, mapperCount);
                
-                threads[packCount].start();     
+                threads[packCount++].start();
                 
             } catch (IOException ex) {
                 Logger.getLogger(ReducerListener.class.getName()).log(Level.SEVERE, null, ex);
@@ -162,9 +182,9 @@ class ReducerListener extends Thread {
         }
         
         System.out.println("Reducer Finish Receiving.");
+             
         
         while(!reducer.checkTasksDone()) {
-            System.out.print("Reducing...");
             try {
                 TimeUnit.SECONDS.sleep(1);
                 System.out.print(".");               
@@ -172,24 +192,13 @@ class ReducerListener extends Thread {
                 Logger.getLogger(ReducerListener.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
-        System.out.print(" DOND \n ");
-        System.err.println("Saving Inverting Index");
-        
-        /*
+              
+        System.err.println("Saving Inverting Index");   
         try {
-            // Send result back to IndexMaster
-            Socket replySocket = new Socket(reducer.getMasterIP(), reducer.getMasterPort());
-            out = new ObjectOutputStream(replySocket.getOutputStream());
-            out.writeObject(reducer.getResult());
-            System.out.println("Reducer Finish all Tasks");
-            out.close();
-            
+            reducer.writeToFile();
         } catch (IOException ex) {
             Logger.getLogger(ReducerListener.class.getName()).log(Level.SEVERE, null, ex);
         }
-        */
-          
         this.interrupt();
     }
 }
@@ -202,16 +211,18 @@ class ReducerThread extends Thread {
     
     public ReducerThread(Reducer reducer, int num) {
         this.reducer = reducer;
-        this.pack = reducer.getTask();
-        this.filePath = pack.getFileDirectory();
         this.id = num;
     }
     
     public void run() {
         HashMap<String, Integer> Table = new HashMap<>();      
-        LinkedList<Posting> tempList = null;
+        LinkedList<Posting> tempList = new LinkedList<>();
         Posting posting = null;
-             
+        this.pack = reducer.getTask();
+        this.filePath = pack.getFileDirectory();
+        
+        Table = pack.getTable();
+        
         int oldvalue = 0;
         int newvalue = 0;
         for(String word: Table.keySet()) {
@@ -244,8 +255,6 @@ class ReducerThread extends Thread {
         }
         
         System.out.println("Reducer Thread Finished");
-        reducer.printResult();
-        // If this is the last reducer
         reducer.finishReducing();       
         this.interrupt();
     }
