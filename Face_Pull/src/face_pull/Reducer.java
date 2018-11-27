@@ -7,6 +7,8 @@ package face_pull;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -125,6 +127,23 @@ public class Reducer extends Thread {
             tasksDone = true;
     }
     
+    public HashMap<String, LinkedList<Posting>> getOldMap(String letter) {
+        File f = new File("index/" + letter + ".bin");
+        HashMap<String, LinkedList<Posting>> map = new HashMap<>();
+        try {
+            ObjectInputStream out = new ObjectInputStream(new FileInputStream(f));
+            map = (HashMap<String, LinkedList<Posting>>) out.readObject();
+            out.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Reducer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Reducer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Reducer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return map;
+    }
+    
     public void writeToFile(ArrayList<String> startLetters) throws IOException {
         
         // 1. ========== Save as .txt ========
@@ -148,16 +167,26 @@ public class Reducer extends Thread {
         /*
         // 2. ========== Save as HashMap ========
         for(String start: startLetters) {
-            HashMap<String, LinkedList<Posting>> outMap = new HashMap<>();
+            HashMap<String, LinkedList<Posting>> outMap = getOldMap(start);
             for(String word: result.keySet()) {
-                outMap.put(word, result.get(word));
+                // Merge new index with old index
+                if(outMap.containsKey(word)) {
+                    LinkedList<Posting> tempList = outMap.get(word);
+                    for(Posting post: result.get(word)) {
+                        tempList.add(post);
+                    }
+                    outMap.put(word, tempList);
+                } else {
+                    outMap.put(word, result.get(word));
+                }
             }
             File f = new File("index/" + start + ".bin");
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(f));
             out.writeObject(outMap); 
             out.close();
         }
-*/
+        */
+
     }
 }
 
