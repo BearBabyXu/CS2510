@@ -67,6 +67,7 @@ public class WorkerAssigner extends Thread {
                     break;
                     
                 case 3:
+                    System.out.println("WorkerAssigner receive search");
                     new Searcher((SearcherConfig)config.getConfig(),socket).start();
                     break;
 

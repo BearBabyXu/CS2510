@@ -37,7 +37,9 @@ public class SearcherHelper {
         return this.port;
     }
     
-   
+   public String toString(){
+       return "Searcher:"+id+" ip:"+this.ip+" port:"+this.port+" keyword:"+this.keyword;
+   }
     
     public Config createConfig() {
         Config temp=new Config(3);

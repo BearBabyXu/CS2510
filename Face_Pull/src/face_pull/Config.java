@@ -64,7 +64,7 @@ public class Config implements Serializable {
         } else if(type==2){
             return "Asking port";
         }else if(type==3){
-            return "Searcher";
+            return "lalallallalal";
         }else{
             return "Wrong";
         }

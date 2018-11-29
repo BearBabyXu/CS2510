@@ -5,13 +5,14 @@
  */
 package face_pull;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 /**
  *
  * @author brantxu
  */
-public class SearchResult {
+public class SearchResult implements Serializable{
     private String keyword;
     private LinkedList<Posting> list;
     
@@ -19,6 +20,18 @@ public class SearchResult {
     public SearchResult(String keyword, LinkedList<Posting> list){
         this.keyword=keyword;
         this.list=list;
+    
+    }
+    
+    public String toString(){
+        String res=keyword;
+        
+        for(Posting e: list){
+            res=res+" "+e.getFileName()+" "+e.getOccurence()+" ";
+        
+        }
+        
+        return res;
     
     }
     
