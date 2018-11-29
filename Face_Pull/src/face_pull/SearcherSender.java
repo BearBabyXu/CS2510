@@ -40,7 +40,7 @@ public class SearcherSender extends Thread{
             workerOutput.writeObject(sh.createConfig());
             ObjectInputStream workerInput=new ObjectInputStream(workerSocket.getInputStream());
             SearchResult result=(SearchResult) workerInput.readObject();
-            System.out.println(result.toString());
+            //System.out.println(result.toString());
        //     ObjectOutputStream clientOutput=new ObjectOutputStream(socket.getOutputStream());
          
             clientOutput.writeObject(result);
