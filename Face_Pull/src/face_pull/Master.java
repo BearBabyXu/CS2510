@@ -9,6 +9,7 @@ package face_pull;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -81,7 +82,7 @@ public class Master extends Thread{
             System.out.println("IndexRequst received:"+request.toString());
             indexJobInitialization(request);
             }else if(request.getType()==1){
-                
+                System.out.println("Query received:"+request.toString());
                 searchJobInitialization(request);
                 
               
@@ -97,17 +98,24 @@ public class Master extends Thread{
                 
     }
     
-    public boolean searchJobInitialization(Request request){
+    public boolean searchJobInitialization(Request request) throws IOException{
       
     String[] keyWords=request.getQuery().split(" ");
     
     numSearcher=keyWords.length;
+    ObjectOutputStream clientOutput=new ObjectOutputStream(socket.getOutputStream());
     for(int i=0;i<numSearcher;i++){
         SearcherHelper tempSearcherHelper=new SearcherHelper(keyWords[i],i,serverList.get(currentServer % numServer),WorkerServerPort3);
         currentServer++;
-        new SearcherSender(tempSearcherHelper, socket);
+        new SearcherSender(tempSearcherHelper, socket,clientOutput).start();
         searcherHelperList.add(tempSearcherHelper);
     }
+    
+    for(SearcherHelper e: searcherHelperList){
+        System.out.println(e.toString());
+    }
+    
+    
     
     return true;
     }

@@ -44,7 +44,14 @@ public class Request implements Serializable{
     }
     
     public String toString(){
+        if(type==0){
         return "IndexRequest type:"+ this.type+ " dir:"+this.File_Directory;
+        }else if(type==1){
+        return "Query type:"+ this.type+"raw query"+this.query;
+        }else{
+            return "wrong request";
+        }
+        
     
     }
 }

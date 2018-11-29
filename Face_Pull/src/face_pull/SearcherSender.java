@@ -18,19 +18,35 @@ import java.util.logging.Logger;
  */
 public class SearcherSender extends Thread{
     private SearcherHelper sh;
-    private Socket socket;
+    private  Socket socket;
+   private ObjectOutputStream clientOutput;
     
     
-    public SearcherSender(SearcherHelper sh, Socket socket){
+    
+    public SearcherSender(SearcherHelper sh, Socket socket,ObjectOutputStream clientOutput ){
         
         this.sh=sh;
         this.socket=socket;
+        this.clientOutput=clientOutput;
         
     }
     
     public void run(){
         try {
-            launch();
+            Socket workerSocket=new Socket(sh.getIp(),sh.getPort());
+            
+            ObjectOutputStream workerOutput=new ObjectOutputStream(workerSocket.getOutputStream());
+            
+            workerOutput.writeObject(sh.createConfig());
+            ObjectInputStream workerInput=new ObjectInputStream(workerSocket.getInputStream());
+            SearchResult result=(SearchResult) workerInput.readObject();
+            System.out.println(result.toString());
+       //     ObjectOutputStream clientOutput=new ObjectOutputStream(socket.getOutputStream());
+         
+            clientOutput.writeObject(result);
+          //  clientOutput.reset();
+           
+            
         } catch (IOException ex) {
             Logger.getLogger(SearcherSender.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
@@ -38,18 +54,6 @@ public class SearcherSender extends Thread{
         }
     }
     
-   public boolean launch() throws IOException, ClassNotFoundException{
-         Socket workerSocket=new Socket(sh.getIp(),sh.getPort());
-         
-        ObjectOutputStream workerOutput=new ObjectOutputStream(workerSocket.getOutputStream());
-        ObjectInputStream workerInput=new ObjectInputStream(workerSocket.getInputStream());
-        workerOutput.writeObject(sh.createConfig());
-        SearchResult result=(SearchResult) workerInput.readObject();
-        
-       ObjectOutputStream clientOutput=new ObjectOutputStream(socket.getOutputStream());
-       clientOutput.writeObject(result);
-        return true;
-   
-   }
+
     
 }

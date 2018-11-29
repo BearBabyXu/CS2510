@@ -19,20 +19,23 @@ import java.util.logging.Logger;
  */
 public class Client {
     
-    public static void main(String args[]) {
+    public static void main(String args[]) throws ClassNotFoundException {
         ObjectOutputStream out = null;
-        ObjectInputStream in = null;
+        
         Request request = null;
         
         try {
+            System.out.print("WTF");
             Socket socket = new Socket("127.0.0.1", 8888);
+              System.out.print("WTF2");
             Scanner read = new Scanner(System.in);
             out = new ObjectOutputStream(socket.getOutputStream());
+           
             
             while(true) {
                 System.out.print("Type >>> ");
                 //String req = read.nextLine();
-                String req = "index";
+                String req = "search";
                 if(req.toLowerCase().equals("exit"))
                     break;
                 if(req.toLowerCase().equals("index")) {
@@ -44,11 +47,33 @@ public class Client {
                     //request.addFileDirectory(file);
                     out.writeObject(request);
                 } else if (req.toLowerCase().equals("search")) {
+                    
                     System.out.print("Requ >>> ");
                     String keyword = read.nextLine();
+                    String[] keywords=keyword.split(" ");
+                    System.out.print("Keywords:");
+                    
+                    for(int i=0; i<keywords.length;i++){
+                        System.out.print(keywords[i]+" ");
+                    }
+                    
+                    int length=keywords.length;
+                   int count=0;
                    request = new Request(1);
                     request.addQuery(keyword);
                     out.writeObject(request);
+                  
+                     ObjectInputStream in=new ObjectInputStream(socket.getInputStream());
+                    
+                    while(count<length){
+                       
+                        SearchResult temp=(SearchResult) in.readObject();
+                        System.out.println(temp.toString());
+                        count++;
+                    }
+                    
+                    
+                    
                 } else {
                     System.err.println("Unknown Request");
                 }   
@@ -59,5 +84,7 @@ public class Client {
         }
         
     }
+    
+    
     
 }

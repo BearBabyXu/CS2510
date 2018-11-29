@@ -5,11 +5,13 @@
  */
 package face_pull;
 
+import java.io.Serializable;
+
 /**
  *
  * @author brantxu
  */
-public class SearcherConfig {
+public class SearcherConfig implements Serializable{
     private String keyWord;
     private int id;
     public SearcherConfig(String keyWord, int id){
@@ -25,6 +27,10 @@ public class SearcherConfig {
     
     public int getId(){
         return this.id;
+    }
+    
+    public String toString(){
+        return "id:"+id+" keyWord:"+keyWord;
     }
     
 }
