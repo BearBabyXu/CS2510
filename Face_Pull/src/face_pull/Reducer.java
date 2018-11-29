@@ -70,14 +70,12 @@ public class Reducer extends Thread {
             System.out.printf("Reducer on %s:%d is on and runing \n", serverSocket.getInetAddress(), serverSocket.getLocalPort());
             
             // Listener for income package from Mapper
-            System.out.println("Waiting for reducerpackages...");
             ReducerListener reducerListener = new ReducerListener(serverSocket, this);
             reducerListener.start();
             
             while(!finishReceiving) {
+                // Wait until receiving correct number of packages from mappers
                TimeUnit.SECONDS.sleep(1);
-               //System.out.print(".");
-               System.out.println(tasks.size());
             }
             
             System.out.printf("Reducer #%d, finish collecting packages\n", reducerID);
@@ -145,7 +143,6 @@ public class Reducer extends Thread {
     }
     
     public boolean checkReceived() {
-        System.out.printf("I recieved %d packages.", tasks.size());
         if(tasks.size() >= mapperCount)
             finishReceiving = true;
         return finishReceiving;
@@ -249,7 +246,6 @@ class ReducerListener extends Thread {
                 pack = (ReducerPackage) in.readObject();
                 reducer.addTask(pack);
                 System.out.printf("Reducer on %s:%d ", socket.getInetAddress(), socket.getLocalPort());
-                System.out.printf("received package from Mapper\n");           
             }
         } catch (IOException ex) {
             Logger.getLogger(ReducerListener.class.getName()).log(Level.SEVERE, null, ex);
