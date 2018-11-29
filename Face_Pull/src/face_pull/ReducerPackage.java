@@ -21,13 +21,14 @@ public class ReducerPackage implements Serializable{
     public ReducerPackage() {
         this.File_Directory = null;
         this.Table = new HashMap<>();
+        this.letters = new ArrayList<>();
     }
     
-    public void setFilePath(String filePath) {
+    public void setFileName(String filePath) {
         File_Directory = filePath;
     }
     
-    public String getFileDirectory() {
+    public String getFileName() {
         return File_Directory;
     }
     

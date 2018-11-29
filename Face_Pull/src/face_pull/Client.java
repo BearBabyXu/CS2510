@@ -22,7 +22,7 @@ public class Client {
     public static void main(String args[]) {
         ObjectOutputStream out = null;
         ObjectInputStream in = null;
-        IndexRequest request = null;
+        Request request = null;
         
         try {
             Socket socket = new Socket("127.0.0.1", 8888);
@@ -39,14 +39,14 @@ public class Client {
                     System.out.print("Requ >>> ");
                     //String file = read.nextLine();
                     String file = "/Users/brantxu/Documents/GitHub/CS2510/Face_Pull/files";
-                   request = new IndexRequest(0);
+                   request = new Request(0);
                    request.addFileDirectory(file);
                     //request.addFileDirectory(file);
                     out.writeObject(request);
                 } else if (req.toLowerCase().equals("search")) {
                     System.out.print("Requ >>> ");
                     String keyword = read.nextLine();
-                   request = new IndexRequest(1);
+                   request = new Request(1);
                     request.addQuery(keyword);
                     out.writeObject(request);
                 } else {

@@ -41,7 +41,7 @@ public class WorkerAssigner extends Thread {
                     break;
 
                 case 1:
-                    System.out.println("call outside");
+                    
                     new Reducer((ReducerConfig)config.getConfig()).start();
                     break;
 
@@ -64,6 +64,10 @@ public class WorkerAssigner extends Thread {
 
                     }
 
+                    break;
+                    
+                case 3:
+                    new Searcher((SearcherConfig)config.getConfig(),socket).start();
                     break;
 
             }

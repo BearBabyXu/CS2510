@@ -24,7 +24,7 @@ public class Face_Pull {
         
         ServerSocket server=new ServerSocket(port);
         while(true){
-            new IndexMaster(server.accept()).start();
+            new Master(server.accept()).start();
         }
         
     }

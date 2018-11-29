@@ -12,15 +12,15 @@ import java.io.Serializable;
  * @author Egan
  */
 public class Posting implements Serializable {
-    private static String File_Source;
-    private static int Occurence;
+    private String File_Source;
+    private int Occurence;
     
     public Posting(String _FILESOURCE, int _OCCURENCE) {
         this.File_Source = _FILESOURCE;
         this.Occurence = _OCCURENCE;
     }
     
-    public String getFileSource() {
+    public String getFileName() {
         return File_Source;
     }
     

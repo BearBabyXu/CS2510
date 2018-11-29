@@ -38,11 +38,14 @@ public class Reducer extends Thread {
     private HashMap<String, LinkedList<Posting>> result;
     private int finishedReducer;
     private boolean tasksDone;
+    private boolean finishReceiving;
+    private int nowReceived;
     
     // element for sending process
     private final String masterIP;
     private final int masterPort;
     private int reducerID;
+    private ArrayList<String> startLetters;
     
     public Reducer(ReducerConfig config) {
         this.config = config;
@@ -55,7 +58,9 @@ public class Reducer extends Thread {
         this.tasks = new LinkedList<>();
         this.result = new HashMap<>();
         this.reducerID = config.getId();
-        
+        this.finishReceiving = false;
+        this.nowReceived = 0;
+        this.startLetters = new ArrayList<>();
     }
     
     public void run() {
@@ -65,60 +70,85 @@ public class Reducer extends Thread {
             System.out.printf("Reducer on %s:%d is on and runing \n", serverSocket.getInetAddress(), serverSocket.getLocalPort());
             
             // Listener for income package from Mapper
+            System.out.println("Waiting for reducerpackages...");
             ReducerListener reducerListener = new ReducerListener(serverSocket, this);
-            reducerListener.start();        
+            reducerListener.start();
             
+            while(!finishReceiving) {
+               TimeUnit.SECONDS.sleep(1);
+               //System.out.print(".");
+               System.out.println(tasks.size());
+            }
+            
+            System.out.printf("Reducer #%d, finish collecting packages\n", reducerID);
+            for(ReducerPackage pack: tasks) {
+                int oldvalue = 0;
+                int newvalue = 0;
+                HashMap<String, Integer> Table = pack.getTable();
+                LinkedList<Posting> tempList = new LinkedList<>();
+                String fileName = pack.getFileName();
+                Posting posting = null;
+                startLetters = pack.getStartLetters();
+            
+                for(String word: Table.keySet()) {
+                    newvalue = Table.get(word);
+                    oldvalue = 0;
+                    tempList = new LinkedList<>();
+                    
+                    // Key already exist
+                    int index = -1;
+                    if(result.containsKey(word)) {
+                        tempList = result.get(word);
+                        // If already exist in same file
+                        for(Posting p: tempList) {
+                            if(p.getFileName().equals(fileName)) {
+                                // retrieve old value
+                                oldvalue = p.getOccurence();
+                                // retrive that key index
+                                index = tempList.indexOf(p);
+                                break;
+                            }
+                        }
+                    }
+                
+                    posting = new Posting(fileName, newvalue+oldvalue);
+                    // from different file
+                    if(index != -1) {
+                        tempList.set(index, posting);
+                    }
+                    // from existing file
+                    else
+                        tempList.add(posting);             
+                    result.put(word, tempList);                   
+                }
+            }  
+        
+            System.out.printf("Reducer #%d, finish reducing\n", reducerID);
+                   
         } catch (IOException ex) {
             Logger.getLogger(Reducer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Reducer.class.getName()).log(Level.SEVERE, null, ex);
         }       
-    }
-    
-    public int getMapperCount() {
-        return mapperCount;
+        
+        try {
+            writeToFile();
+        } catch (IOException ex) {
+            Logger.getLogger(Reducer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.out.printf("Reducer #%d, Total size:%d\n", reducerID, result.size());
+        this.interrupt();
     }
     
     public void addTask(ReducerPackage pack) {
         tasks.add(pack);
     }
     
-    public ReducerPackage getTask() {
-        return tasks.poll();
-    }
-    
-    public boolean checkKey(String word) {
-        return result.containsKey(word);
-    }
-    
-    public LinkedList getKeyValue(String word) {
-        return result.get(word);
-    }
-    
-    public void addPosting(String key, LinkedList value) {
-        result.put(key, value);
-    }
-    
-    public int getMasterPort() {
-        return masterPort;
-    }
-    
-    public String getMasterIP() {
-        return masterIP;
-    }
-    
-    public HashMap<String, LinkedList<Posting>> getResult() {
-        return result;
-    }
-    
-    public void printResult() {
-        for(String word: result.keySet()) {
-            for(Posting posting: result.get(word)) {
-                System.out.printf("%s: %d - %s", word, posting.getOccurence(), posting.getFileSource());
-            }
-        }
-    }
-    
-    public boolean checkTasksDone() {
-        return tasksDone;
+    public boolean checkReceived() {
+        System.out.printf("I recieved %d packages.", tasks.size());
+        if(tasks.size() >= mapperCount)
+            finishReceiving = true;
+        return finishReceiving;
     }
     
     public void finishReducing() {
@@ -128,12 +158,14 @@ public class Reducer extends Thread {
     }
     
     public HashMap<String, LinkedList<Posting>> getOldMap(String letter) {
-        File f = new File("index/" + letter + ".bin");
+        File f = new File("index/hashmap/" + letter + ".bin");      
         HashMap<String, LinkedList<Posting>> map = new HashMap<>();
+        if(!f.exists())
+            return map;
         try {
-            ObjectInputStream out = new ObjectInputStream(new FileInputStream(f));
-            map = (HashMap<String, LinkedList<Posting>>) out.readObject();
-            out.close();
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(f));
+            map = (HashMap<String, LinkedList<Posting>>) in.readObject();
+            in.close();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Reducer.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -144,30 +176,37 @@ public class Reducer extends Thread {
         return map;
     }
     
-    public void writeToFile(ArrayList<String> startLetters) throws IOException {
+    public void writeToFile() throws IOException {
         
         // 1. ========== Save as .txt ========
         // tranverse every element in HashMap<Word, LinkerList<File, occurence>>
         for(String start: startLetters) {
             File f = new File("index/" + start + ".txt");
+            if(!f.exists())
+                f.createNewFile();
             BufferedWriter br = new BufferedWriter(new FileWriter(f, true));
             for(String word: result.keySet()) {
                 if(word.substring(0, 1).equals(start)) {
                     br.write(word + "-");
+                    //System.out.println((result.get(word).size()));
                     for(Posting post: result.get(word)) {
-                        br.write(post.getOccurence() + "," + post.getFileSource() + ";");
+                        br.write(post.getOccurence() + "," + post.getFileName()+ ";");
                     }
                     br.write("\n");
                 }
             }
-            br.close();        
+            br.close();
         }
         
         /*********** Another Saving Method **********/
-        /*
         // 2. ========== Save as HashMap ========
+        
         for(String start: startLetters) {
+            File f = new File("index/hashmap/" + start + ".bin");
+            System.out.println("Reducer:" + reducerID + " getting bin: " + start);
             HashMap<String, LinkedList<Posting>> outMap = getOldMap(start);
+            if(f.exists())
+                f.delete();
             for(String word: result.keySet()) {
                 // Merge new index with old index
                 if(outMap.containsKey(word)) {
@@ -180,13 +219,10 @@ public class Reducer extends Thread {
                     outMap.put(word, result.get(word));
                 }
             }
-            File f = new File("index/" + start + ".bin");
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(f));
             out.writeObject(outMap); 
             out.close();
         }
-        */
-
     }
 }
 
@@ -204,111 +240,23 @@ class ReducerListener extends Thread {
         ObjectInputStream in = null;
         ObjectOutputStream out = null;
         ReducerPackage pack = null;
-        int packCount = 0;
-        int mapperCount = reducer.getMapperCount();
-        ReducerThread[] threads = new ReducerThread[mapperCount];
         
-        // thread initialization      
-        for(int id = 0; id < threads.length; id++) {
-            threads[id] = new ReducerThread(reducer, id);
-        }
-        
-        // loop until receive matching numbers of mapper count
-        while(packCount < mapperCount) {
-            try {
-                // wait for coming package
+        try {
+            while(!reducer.checkReceived()) {
                 socket = serverSocket.accept();
                 in = new ObjectInputStream(socket.getInputStream());
-                
+            
                 pack = (ReducerPackage) in.readObject();
                 reducer.addTask(pack);
                 System.out.printf("Reducer on %s:%d ", socket.getInetAddress(), socket.getLocalPort());
-                System.out.printf("received %d/%d packages from Mapper\n", packCount, mapperCount);
-               
-                threads[packCount++].start();
-                
-            } catch (IOException ex) {
-                Logger.getLogger(ReducerListener.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(ReducerListener.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.printf("received package from Mapper\n");           
             }
-        }
-        
-        System.out.println("Reducer Finish Receiving.");
-             
-        
-        while(!reducer.checkTasksDone()) {
-            try {
-                TimeUnit.SECONDS.sleep(1);
-                System.out.print(".");               
-            } catch (InterruptedException ex) {
-                Logger.getLogger(ReducerListener.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-              
-        System.err.println("Saving Inverting Index");   
-        try {
-            reducer.writeToFile(pack.getStartLetters());
         } catch (IOException ex) {
             Logger.getLogger(ReducerListener.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        this.interrupt();
-    }
-}
-
-class ReducerThread extends Thread {
-    private Reducer reducer;
-    private ReducerPackage pack;
-    private String filePath;
-    private int id;
-    
-    public ReducerThread(Reducer reducer, int num) {
-        this.reducer = reducer;
-        this.id = num;
-    }
-    
-    public void run() {
-        HashMap<String, Integer> Table = new HashMap<>();      
-        LinkedList<Posting> tempList = new LinkedList<>();
-        Posting posting = null;
-        this.pack = reducer.getTask();
-        this.filePath = pack.getFileDirectory();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(ReducerListener.class.getName()).log(Level.SEVERE, null, ex);
+        } 
         
-        Table = pack.getTable();
-        
-        int oldvalue = 0;
-        int newvalue = 0;
-        for(String word: Table.keySet()) {
-            newvalue = Table.get(word);
-            oldvalue = 0;
-            
-            // Key already exist
-            int index = -1;
-            if(reducer.checkKey(word)) {
-                tempList = reducer.getKeyValue(word);
-                // If already exist in same file
-                for(Posting p: tempList) {
-                    if(p.getFileSource().equals(filePath)) {
-                        // retrieve old value
-                        oldvalue = p.getOccurence();
-                        // retrive that key index
-                        index = tempList.indexOf(p);
-                        break;
-                    }
-                }           
-            }
-            posting = new Posting(filePath, newvalue+oldvalue);
-            // from different file
-            if(index != -1)
-                tempList.set(index, posting);
-            // from existing file
-            else
-                tempList.add(posting);             
-            reducer.addPosting(word, tempList);
-        }
-        
-        System.out.println("Reducer Thread Finished");
-        reducer.finishReducing();       
         this.interrupt();
     }
 }

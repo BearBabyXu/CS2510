@@ -31,7 +31,9 @@ public class Config implements Serializable {
             this.config = (MapperConfig) config;
         } else if(type == 1) {
             this.config = (ReducerConfig) config;
-        } else {
+        } else if(type==3){
+            this.config=(SearcherConfig) config;
+        }else{
             System.err.println("Wrong Type");
         }
     }
@@ -43,8 +45,11 @@ public class Config implements Serializable {
             return (MapperConfig) config;
         } else if(type == 1) {
             return (ReducerConfig) config;
-        } else{
-            return config;
+        } else if(type==3){
+            return (SearcherConfig)config;
+        }
+        else{
+            return null;
         }
     }
     
@@ -58,8 +63,10 @@ public class Config implements Serializable {
             return this.config.toString();
         } else if(type==2){
             return "Asking port";
+        }else if(type==3){
+            return "Searcher";
         }else{
-            return "Wrong type";
+            return "Wrong";
         }
     
     }

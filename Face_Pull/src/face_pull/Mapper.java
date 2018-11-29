@@ -104,7 +104,6 @@ public class Mapper extends Thread{
         
         HashMap<String, Integer> table = new HashMap<>();
         // mapping function
-
         for(String word: contents) {
             int value = 1;
             if(table.containsKey(word))
@@ -123,12 +122,12 @@ public class Mapper extends Thread{
         
         // set filepath of each package
         for(int i = 0; i < reducerCount; i++) {
-            System.out.println(reducerCount + "," + i);
             packages[i] = new ReducerPackage();
-            packages[i].setFilePath(fileName);
+            packages[i].setFileName(fileName);
         }
         
         int hashCode = 0;
+        ArrayList<String> letters = new ArrayList<>();
         for(String word: mappedTable.keySet()) {
             // go over each word and seperate into each package
             // depends on the first letter of the word
@@ -141,7 +140,8 @@ public class Mapper extends Thread{
                     hashCode = Math.abs(word.substring(0, 1).hashCode()); 
                     int reducerIndex = hashCode%reducerCount;
                     packages[reducerIndex].addPosting(word, mappedTable.get(word));
-                    packages[reducerIndex].addStartLetter(word.substring(0, 1));
+                    if(!letters.contains(word.substring(0, 1)))
+                        packages[reducerIndex].addStartLetter(word.substring(0, 1));
                 }
             }
         }

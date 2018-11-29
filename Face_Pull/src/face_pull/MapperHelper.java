@@ -21,7 +21,7 @@ public class MapperHelper {
     private String ip;
     private  int port;
     private int numMappers;
-     private static ObjectOutputStream output;
+     private  ObjectOutputStream output;
    
     
     public MapperHelper(String path, int id, String file, String ip, int port, int numMapper){

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/Users/brantxu/Documents/GitHub/CS2510/Face_Pull/src/face_pull/IndexMasterServer.java</file>
+            <file>file:/Users/brantxu/Documents/GitHub/CS2510/Face_Pull/src/face_pull/Config.java</file>
+            <file>file:/Users/brantxu/Documents/GitHub/CS2510/Face_Pull/src/face_pull/WorkerServer.java</file>
+            <file>file:/Users/brantxu/Documents/GitHub/CS2510/Face_Pull/src/face_pull/ReducerConfig.java</file>
+            <file>file:/Users/brantxu/Documents/GitHub/CS2510/Face_Pull/src/face_pull/ReducerDes.java</file>
+            <file>file:/Users/brantxu/Documents/GitHub/CS2510/Face_Pull/src/face_pull/SearchMasterServer.java</file>
+            <file>file:/Users/brantxu/Documents/GitHub/CS2510/Face_Pull/src/face_pull/IndexRequest.java</file>
+            <file>file:/Users/brantxu/Documents/GitHub/CS2510/Face_Pull/src/face_pull/IndexMaster.java</file>
+            <file>file:/Users/brantxu/Documents/GitHub/CS2510/Face_Pull/src/face_pull/Face_Pull.java</file>
+            <file>file:/Users/brantxu/Documents/GitHub/CS2510/Face_Pull/src/face_pull/WorkerAssigner.java</file>
+            <file>file:/Users/brantxu/Documents/GitHub/CS2510/Face_Pull/src/IndexMaster.java</file>
+            <file>file:/Users/brantxu/Documents/GitHub/CS2510/Face_Pull/src/face_pull/Client.java</file>
+            <file>file:/Users/brantxu/Documents/GitHub/CS2510/Face_Pull/src/face_pull/SearchMaster.java</file>
+            <file>file:/Users/brantxu/Documents/GitHub/CS2510/Face_Pull/src/face_pull/ReducerPackage.java</file>
+        </group>
+    </open-files>
+</project-private>

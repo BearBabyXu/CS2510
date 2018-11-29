@@ -18,7 +18,9 @@ public class IndexMasterServer {
         
         while(true){
             
-            new IndexMaster(google.accept()).start();
+            new Master(google.accept()).start();
+            
+            
         }
     }
 }
