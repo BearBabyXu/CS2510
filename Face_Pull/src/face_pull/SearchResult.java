@@ -23,6 +23,14 @@ public class SearchResult implements Serializable{
     
     }
     
+    public String getKeyword() {
+        return keyword;
+    }
+    
+    public LinkedList<Posting> getList() {
+        return list;
+    }
+    
     public String toString(){
         String res=keyword;
         

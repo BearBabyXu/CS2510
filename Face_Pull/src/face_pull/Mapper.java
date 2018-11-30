@@ -154,7 +154,6 @@ public class Mapper extends Thread{
         int reducerCount = packages.length;
         Socket socket = null;
         ObjectOutputStream out = null;
-        ReducerPackage pack = null;
         
         try {
             for(int i = 0; i < reducerCount; i++) {
@@ -166,7 +165,6 @@ public class Mapper extends Thread{
                 
                 // send package to assigned Reducer
                 out.writeObject(packages[i]);
-                System.out.println("Package Sent.");
                 out.close();
             }
             

@@ -147,11 +147,7 @@ public class Master extends Thread{
                 currentServer++;
                 mapperHelperList.add(tempMaperHelper);
                 
-            }
-            
-            
-            
-        
+            }            
         }
         
         
