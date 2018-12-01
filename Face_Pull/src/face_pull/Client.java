@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package face_pull;
+//package face_pull;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -31,7 +31,7 @@ public class Client {
             String req = "";
             
             do {
-                Socket socket = new Socket("127.0.0.1", 8888);
+                Socket socket = new Socket("136.142.227.15", 8888);
                 Scanner read = new Scanner(System.in);
                 out = new ObjectOutputStream(socket.getOutputStream());
                 System.out.print("Request Type >>> ");
