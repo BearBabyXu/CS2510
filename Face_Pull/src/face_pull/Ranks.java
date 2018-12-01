@@ -51,7 +51,7 @@ public class Ranks {
                 break;
             default:
                 // Sort by rank value
-                Collections.sort(rankList, new SortbyMatch());
+                Collections.sort(rankList, new SortbyRank());
                 break;
         }
         
