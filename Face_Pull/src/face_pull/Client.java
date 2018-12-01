@@ -30,6 +30,7 @@ public class Client {
             Socket socket = new Socket("127.0.0.1", 8888);
             Scanner read = new Scanner(System.in);
             out = new ObjectOutputStream(socket.getOutputStream());
+             
             String req = "";
             
             do {
@@ -57,7 +58,7 @@ public class Client {
                     request = new Request(1);
                     request.addQuery(keyword);
                     out.writeObject(request);
-                    ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+                   ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
                     System.err.println("****************************************");
                     System.err.println("***** Tiny Google Searching Result *****");
@@ -69,6 +70,7 @@ public class Client {
                     }
                     ranks.searchResult();
                     System.out.println();
+                   
                 } else {
                     System.err.println("Unknown Request");
                 }

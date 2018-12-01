@@ -7,11 +7,15 @@
 package face_pull;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,6 +42,8 @@ public class Master extends Thread{
     private final int numServer=1;
     private ObjectInputStream input;
     private int numSearcher;
+    private String fileInventoryPath="fileInventory.txt";
+    private HashMap<String,Integer> fileInventory;
     
     
     
@@ -120,8 +126,30 @@ public class Master extends Thread{
     return true;
     }
     
+    public void getFileInventory(String dir) throws FileNotFoundException, IOException, ClassNotFoundException{
+        
+        File f = new File(dir);  
+        
+        if(f.exists()){
+             ObjectInputStream in = new ObjectInputStream(new FileInputStream(f));
+            fileInventory = (HashMap<String, Integer>) in.readObject();
+            in.close();
+            
+        }else{
+            fileInventory=new HashMap<String,Integer>();
+                }
+    }
     
-   public boolean indexJobInitialization(Request request) throws IOException{
+    public void saveFileInventory(String dir) throws FileNotFoundException, IOException{
+        File f=new File(dir);
+        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(f));
+            out.writeObject(fileInventory); 
+            out.close();
+    
+    }
+   public boolean indexJobInitialization(Request request) throws IOException, FileNotFoundException, ClassNotFoundException{
+       
+       
         
         String dir=request.getFileDirectory();
         
@@ -130,11 +158,12 @@ public class Master extends Thread{
         Long totalLength=0L;
         
         int totalMappers=0;
-        
+        getFileInventory(fileInventoryPath);
         for(File e:folder.listFiles()){
-            if(!e.getAbsolutePath().endsWith("txt")){
+            if(!e.getAbsolutePath().endsWith("txt")||fileInventory.containsKey(e.getAbsolutePath())){
                 continue;
             }
+            fileInventory.put(e.getAbsolutePath(), 1);
             Long tempLength=e.length();
             totalLength+=tempLength;
             
@@ -150,6 +179,7 @@ public class Master extends Thread{
             }            
         }
         
+        saveFileInventory(fileInventoryPath);
         
         int numReducers=(int)(totalLength/(1024*1024*3)+1);
         for(int i=1;i<=numReducers;i++){
@@ -201,5 +231,7 @@ public class Master extends Thread{
     
     return true;
     }
+   
+   
     
 }
