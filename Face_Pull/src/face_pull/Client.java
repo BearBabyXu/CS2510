@@ -28,12 +28,11 @@ public class Client {
         Request request = null;
 
         try {
-            Socket socket = new Socket("127.0.0.1", 8888);
-            Scanner read = new Scanner(System.in);
-            
             String req = "";
             
             do {
+                Socket socket = new Socket("127.0.0.1", 8888);
+                Scanner read = new Scanner(System.in);
                 out = new ObjectOutputStream(socket.getOutputStream());
                 System.out.print("Request Type >>> ");
                 req = read.nextLine();
@@ -75,6 +74,7 @@ public class Client {
                 } else {
                     System.err.println("Unknown Request");
                 }
+                socket.close();
             } while (!req.toLowerCase().equals("exit"));
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);

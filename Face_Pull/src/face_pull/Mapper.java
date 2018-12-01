@@ -123,7 +123,7 @@ public class Mapper extends Thread{
         // set filepath of each package
         for(int i = 0; i < reducerCount; i++) {
             packages[i] = new ReducerPackage();
-            packages[i].setFileName(fileName);
+            packages[i].setFileName(filePath); //modification here
         }
         
         int hashCode = 0;
