@@ -51,9 +51,8 @@ public class Client {
 
                     System.out.print("Keywords >>> ");
                     String keyword = read.nextLine();
-                    String[] keywords = keyword.split(" ");
-
-                    int length = keywords.length;
+                    keyword = checkIllegalKeyword(keyword);
+                    int length = keyword.split(" ").length;
                     int count = 0;
                     request = new Request(1);
                     request.addQuery(keyword);
@@ -64,7 +63,7 @@ public class Client {
                     System.err.println("***** Tiny Google Searching Result *****");
                     System.err.println("****************************************");
                     in = new ObjectInputStream(socket.getInputStream());
-                    Ranks ranks = new Ranks();
+                    Ranks ranks = new Ranks(1);
                     while (count++ < length) {
                         SearchResult temp = (SearchResult) in.readObject();
                         ranks.addListFactor(temp.getList());
@@ -80,4 +79,20 @@ public class Client {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    private static String checkIllegalKeyword(String input) {
+        String[] keyWords = input.split(" ");
+        ArrayList<String> temps = new ArrayList<>();
+    
+        // eliminate all illegal keyword
+        for(String word: keyWords)
+            if(Character.isAlphabetic(word.charAt(0)))
+                temps.add(word.toLowerCase());
+            else
+                System.err.printf("%s is an illegal keyword. \n", word);
+        
+        return String.join(" ", temps);
+    }
 }
+
+

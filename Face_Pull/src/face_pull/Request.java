@@ -27,7 +27,7 @@ public class Request implements Serializable{
         return this.File_Directory;
     }
     
-    public void addQuery(String query) {
+    public void addQuery(String query) {       
         this.query = query;
     }
     
@@ -50,8 +50,6 @@ public class Request implements Serializable{
         return "Query type:"+ this.type+"raw query"+this.query;
         }else{
             return "wrong request";
-        }
-        
-    
+        }     
     }
 }
