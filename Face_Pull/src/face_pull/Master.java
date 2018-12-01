@@ -4,7 +4,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package face_pull;
+//package face_pull;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,9 +38,9 @@ public class Master extends Thread {
     private int WorkerServerPort = 9000;
     private int WorkerServerPort2 = 9000;
     private int WorkerServerPort3 = 9000;
-    private String masterIp = "136.142.227.6";
+    private String masterIp = "136.142.227.15";
     private int resultPort = 9002;
-    private final int numServer = 1;
+    private int numServer=0 ;
     private ObjectInputStream input;
     private int numSearcher;
     private String fileInventoryPath = "index/fileInventory.bin";
@@ -48,16 +48,17 @@ public class Master extends Thread {
 
     public Master(Socket socket) {
 
-        // String partIp="136.142.227.";
-        String partIp = "127.0.0.";
+         String partIp="136.142.227.";
+        //String partIp = "127.0.0.";
         //  for(int i=7;i<i+numServer;i++){
         //    String tempIp=partIp.concat(String.valueOf(i));
         //  serverList.add(tempIp);
         //}
 
-        for (int i = 1; i < 2; i++) {
+        for (int i = 6; i < 15; i++) {
             String tempIp = partIp.concat(String.valueOf(i));
             serverList.add(tempIp);
+            numServer++;
         }
 
         System.out.println("Master initialization ServerList:");

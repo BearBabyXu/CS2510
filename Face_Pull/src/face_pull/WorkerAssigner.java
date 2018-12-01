@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package face_pull;
+//package face_pull;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -50,6 +50,7 @@ public class WorkerAssigner extends Thread {
                     boolean ifFound = false;
 
                     while (!ifFound) {
+                        currentPort++;
                         if (currentPort > endPort) {
                             currentPort = startPort;
                         }
@@ -60,7 +61,7 @@ public class WorkerAssigner extends Thread {
                             dos.close();
                             ifFound = true;
                         }
-                        currentPort++;
+                        
 
                     }
 

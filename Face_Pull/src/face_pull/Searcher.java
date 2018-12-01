@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package face_pull;
+//package face_pull;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,7 +44,10 @@ public class Searcher extends Thread{
             ObjectInputStream input= new ObjectInputStream(new FileInputStream(f));
             this.src=(HashMap<String,LinkedList<Posting>>)input.readObject();
             
-            LinkedList<Posting> res=this.src.getOrDefault(keyWord, null);          
+           
+                
+        
+          //  LinkedList<Posting> res=this.src.getOrDefault(keyWord, null);          
             
             //load map
             ObjectOutputStream output=new ObjectOutputStream(socket.getOutputStream());
@@ -61,7 +64,15 @@ public class Searcher extends Thread{
     }
     
     public SearchResult search(){
+        
+        if(src.containsKey(config.getKeyword())){
+        
+            return new SearchResult(config.getKeyword(),src.get(config.getKeyword()));
+            
+        }else{
+            return new SearchResult(config.getKeyword(), new LinkedList<Posting>());
+        }
            
-        return new SearchResult(config.getKeyword(),src.getOrDefault(config.getKeyword(), new LinkedList<Posting>()));
+        
     }
 }
