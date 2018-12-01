@@ -42,7 +42,7 @@ public class Master extends Thread{
     private final int numServer=1;
     private ObjectInputStream input;
     private int numSearcher;
-    private String fileInventoryPath="fileInventory.txt";
+    private String fileInventoryPath="fileInventory.bin";
     private HashMap<String,Integer> fileInventory;
     
     
