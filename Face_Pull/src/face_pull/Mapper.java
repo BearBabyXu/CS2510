@@ -79,15 +79,18 @@ public class Mapper extends Thread{
         }
               
         ArrayList<String> managedData = new ArrayList<>();
+        char next = '.';
         // data management
         for(String line: contents) {
             // remove space
             for(String word: line.split(" ")) {
                 // eliminate non-alphebet character 
                 String newword = "";
-                for(int c = 0; c < word.length(); c++)
-                    if(Character.isAlphabetic(word.charAt(c)))
+                for(int c = 0; c < word.length(); c++) {
+                    next = word.charAt(c);
+                    if(Character.isLetter(next) || next == '-')
                         newword += word.charAt(c);
+                }
                 // change every terms into lowerCase character
                 // if it's not empty, then save this term
                 if(!newword.equals("")) {

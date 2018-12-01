@@ -89,8 +89,7 @@ public class Master extends Thread {
 
     }
 
-    public boolean searchJobInitialization(Request request) throws IOException {
-
+    public boolean searchJobInitialization(Request request) throws IOException {   
         String[] keyWords = request.getQuery().split(" ");
 
         numSearcher = keyWords.length;
