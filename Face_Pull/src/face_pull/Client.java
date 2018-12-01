@@ -24,16 +24,17 @@ public class Client {
 
     public static void main(String args[]) throws ClassNotFoundException {
         ObjectOutputStream out = null;
+        ObjectInputStream in = null;
         Request request = null;
 
         try {
             Socket socket = new Socket("127.0.0.1", 8888);
             Scanner read = new Scanner(System.in);
-            out = new ObjectOutputStream(socket.getOutputStream());
-             
+            
             String req = "";
             
             do {
+                out = new ObjectOutputStream(socket.getOutputStream());
                 System.out.print("Request Type >>> ");
                 req = read.nextLine();
                 if (req.toLowerCase().equals("exit")) {
@@ -43,7 +44,7 @@ public class Client {
                     System.out.print("File Directory >>> ");
                     String file = read.nextLine();
                     //String file = "/Users/brantxu/Documents/GitHub/CS2510/Face_Pull/files";
-                    //"/Users/Rycemond/Documents/UPitts/CS2510/Operating System/P2/MapReduce/CS2510/Face_Pull/files"
+                    //"/Users/Rycemond/Documents/UPitts/CS2510/P2/MapReduce/CS2510/Face_Pull/files"
                     request = new Request(0);
                     request.addFileDirectory(file);
                     out.writeObject(request);
@@ -57,20 +58,20 @@ public class Client {
                     int count = 0;
                     request = new Request(1);
                     request.addQuery(keyword);
-                    out.writeObject(request);
-                   ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+                    out.writeObject(request);                   
 
+                    System.err.println("");
                     System.err.println("****************************************");
                     System.err.println("***** Tiny Google Searching Result *****");
                     System.err.println("****************************************");
+                    in = new ObjectInputStream(socket.getInputStream());
                     Ranks ranks = new Ranks();
                     while (count++ < length) {
                         SearchResult temp = (SearchResult) in.readObject();
-                            ranks.addListFactor(temp.getList());
+                        ranks.addListFactor(temp.getList());
                     }
                     ranks.searchResult();
                     System.out.println();
-                   
                 } else {
                     System.err.println("Unknown Request");
                 }

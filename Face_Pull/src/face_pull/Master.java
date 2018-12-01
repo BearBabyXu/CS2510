@@ -75,33 +75,25 @@ public class Master extends Thread{
     }
     
     public void run(){
-        try {
-            
-            input=new ObjectInputStream(socket.getInputStream());
-            
+        // Continuously listening from Client
+        while(true) {
+            try {
+                input=new ObjectInputStream(socket.getInputStream());
+                Request request=(Request)input.readObject();
 
-            Request request=(Request)input.readObject();
-            
-            if(request.getType()==0){
-            
-            
-            System.out.println("IndexRequst received:"+request.toString());
-            indexJobInitialization(request);
-            }else if(request.getType()==1){
-                System.out.println("Query received:"+request.toString());
-                searchJobInitialization(request);
-                
-              
-
-            }
-            
-        } catch (IOException ex) {
-            Logger.getLogger(Master.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Master.class.getName()).log(Level.SEVERE, null, ex);
+                if(request.getType()==0) {
+                    System.out.println("IndexRequst received:"+request.toString());
+                    indexJobInitialization(request);
+                } else if (request.getType()==1) {
+                    System.out.println("Query received:"+request.toString());
+                    searchJobInitialization(request);
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(Master.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Master.class.getName()).log(Level.SEVERE, null, ex);
+            }      
         }
-        
-                
     }
     
     public boolean searchJobInitialization(Request request) throws IOException{
