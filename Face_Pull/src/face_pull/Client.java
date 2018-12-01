@@ -36,6 +36,7 @@ public class Client {
                 Scanner read = new Scanner(System.in);
                 System.out.print("Request Type >>> ");
                 req = read.nextLine();
+                out = new ObjectOutputStream(socket.getOutputStream());
                 if (req.toLowerCase().equals("exit")) {
                     break;
                 }
@@ -48,7 +49,6 @@ public class Client {
                     request.addFileDirectory(file);
                     out.writeObject(request);
                 } else if (req.toLowerCase().equals("search")) {
-                    out = new ObjectOutputStream(socket.getOutputStream());
                     System.out.print("Keywords >>> ");
                     String keyword = read.nextLine();
                     System.out.print("Ranking Type: 0 - Ranking ; 1 - Matchings \n>>> ");
