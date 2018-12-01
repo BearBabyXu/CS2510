@@ -26,10 +26,11 @@ public class Client {
         ObjectOutputStream out = null;
         ObjectInputStream in = null;
         Request request = null;
+        Ranks ranks = null;
 
         try {
             String req = "";
-            
+
             do {
                 Socket socket = new Socket("136.142.227.15", 8888);
                 Scanner read = new Scanner(System.in);
@@ -51,25 +52,34 @@ public class Client {
 
                     System.out.print("Keywords >>> ");
                     String keyword = read.nextLine();
-                    keyword = checkIllegalKeyword(keyword);
-                    int length = keyword.split(" ").length;
-                    int count = 0;
-                    request = new Request(1);
-                    request.addQuery(keyword);
-                    out.writeObject(request);                   
+                    System.out.print("Ranking Type: 0 - Ranking ; 1 - Matchings \n>>> ");
+                    String rankType = read.next();
+                    if (rankType.equals("0") || rankType.equals("1")) {
+                        keyword = checkIllegalKeyword(keyword);
+                        int length = keyword.split(" ").length;
+                        int count = 0;
+                        request = new Request(1);
+                        request.addQuery(keyword);
+                        
+                        ranks = new Ranks(Integer.parseInt(rankType));
+                        out.writeObject(request);
 
-                    System.err.println("");
-                    System.err.println("****************************************");
-                    System.err.println("***** Tiny Google Searching Result *****");
-                    System.err.println("****************************************");
-                    in = new ObjectInputStream(socket.getInputStream());
-                    Ranks ranks = new Ranks(1);
-                    while (count++ < length) {
-                        SearchResult temp = (SearchResult) in.readObject();
-                        ranks.addListFactor(temp.getList());
+                        System.err.println("");
+                        System.err.println("****************************************");
+                        System.err.println("***** Tiny Google Searching Result *****");
+                        System.err.println("****************************************");
+                        in = new ObjectInputStream(socket.getInputStream());
+
+                        while (count++ < length) {
+                            SearchResult temp = (SearchResult) in.readObject();
+                            ranks.addListFactor(temp.getList());
+                        }
+                        ranks.searchResult();
+                        System.out.println();
+                    } else {
+                        System.err.println("Wrong ranking type");
                     }
-                    ranks.searchResult();
-                    System.out.println();
+
                 } else {
                     System.err.println("Unknown Request");
                 }
@@ -79,20 +89,25 @@ public class Client {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private static String checkIllegalKeyword(String input) {
         String[] keyWords = input.split(" ");
         ArrayList<String> temps = new ArrayList<>();
-    
+
         // eliminate all illegal keyword
-        for(String word: keyWords)
-            if(Character.isAlphabetic(word.charAt(0)))
+        for (String word : keyWords) {
+            if (Character.isAlphabetic(word.charAt(0))) {
                 temps.add(word.toLowerCase());
-            else
+            } else {
                 System.err.printf("%s is an illegal keyword. \n", word);
+            }
+        }
         
-        return String.join(" ", temps);
+        String keyword = "";
+        for (String word : temps)
+            keyword = keyword + word + " ";
+        keyword = keyword.substring(0, keyword.length()-1);
+
+        return keyword;
     }
 }
-
-
