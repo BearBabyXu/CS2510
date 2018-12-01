@@ -34,7 +34,6 @@ public class Client {
             do {
                 Socket socket = new Socket("136.142.227.15", 8888);
                 Scanner read = new Scanner(System.in);
-                out = new ObjectOutputStream(socket.getOutputStream());
                 System.out.print("Request Type >>> ");
                 req = read.nextLine();
                 if (req.toLowerCase().equals("exit")) {
@@ -49,7 +48,7 @@ public class Client {
                     request.addFileDirectory(file);
                     out.writeObject(request);
                 } else if (req.toLowerCase().equals("search")) {
-
+                    out = new ObjectOutputStream(socket.getOutputStream());
                     System.out.print("Keywords >>> ");
                     String keyword = read.nextLine();
                     System.out.print("Ranking Type: 0 - Ranking ; 1 - Matchings \n>>> ");
