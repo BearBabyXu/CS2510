@@ -84,6 +84,7 @@ public class Master extends Thread {
             }
         } catch (IOException ex) {
             Logger.getLogger(Master.class.getName()).log(Level.SEVERE, null, ex);
+            
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Master.class.getName()).log(Level.SEVERE, null, ex);
         }

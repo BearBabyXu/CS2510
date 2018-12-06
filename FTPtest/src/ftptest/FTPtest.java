@@ -19,14 +19,9 @@ public class FTPtest {
     public static void main(String[] args) throws UnknownHostException, IOException {
         
         
-             int port=8888;
-         System.out.println("TinyGoogle");
-         
-        ServerSocket serverSocket = new ServerSocket(8888);
-        
-        Socket socket=serverSocket.accept();
-        DataInputStream dis=new DataInputStream(socket.getInputStream());
-        System.out.print(dis.readInt());
+           for(int i=1;i<1;i++){
+           System.out.print("here");
+           }
     }
     
 }
