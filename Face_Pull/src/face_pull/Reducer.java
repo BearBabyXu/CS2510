@@ -64,7 +64,7 @@ public class Reducer extends Thread {
     }
     
     public void run() {
-        
+        Long startTime=System.currentTimeMillis();
         try {
             final ServerSocket serverSocket = new ServerSocket(reducerPort);
             System.out.printf("Reducer on %s:%d is on and runing \n", serverSocket.getInetAddress(), serverSocket.getLocalPort());
@@ -122,6 +122,8 @@ public class Reducer extends Thread {
             }  
         
             System.out.printf("Reducer #%d, finish reducing\n", reducerID);
+            Long endTime=System.currentTimeMillis();
+            System.out.println(endTime-startTime);
                    
         } catch (IOException ex) {
             Logger.getLogger(Reducer.class.getName()).log(Level.SEVERE, null, ex);
@@ -135,6 +137,8 @@ public class Reducer extends Thread {
             Logger.getLogger(Reducer.class.getName()).log(Level.SEVERE, null, ex);
         }
         System.out.printf("Reducer #%d, Total size:%d\n", reducerID, result.size());
+         Long endTime=System.currentTimeMillis();
+            System.out.println(endTime-startTime);
         this.interrupt();
     }
     
@@ -177,23 +181,23 @@ public class Reducer extends Thread {
         
         // 1. ========== Save as .txt ========
         // tranverse every element in HashMap<Word, LinkerList<File, occurence>>
-        for(String start: startLetters) {
-            File f = new File("index/" + start + ".txt");
-            if(!f.exists())
-                f.createNewFile();
-            BufferedWriter br = new BufferedWriter(new FileWriter(f, true));
-            for(String word: result.keySet()) {
-                if(word.substring(0, 1).equals(start)) {
-                    br.write(word + "-");
-                    //System.out.println((result.get(word).size()));
-                    for(Posting post: result.get(word)) {
-                        br.write(post.getOccurence() + "," + post.getFileName()+ ";");
-                    }
-                    br.write("\n");
-                }
-            }
-            br.close();
-        }
+//        for(String start: startLetters) {
+//            File f = new File("index/" + start + ".txt");
+//            if(!f.exists())
+//                f.createNewFile();
+//            BufferedWriter br = new BufferedWriter(new FileWriter(f, true));
+//            for(String word: result.keySet()) {
+//                if(word.substring(0, 1).equals(start)) {
+//                    br.write(word + "-");
+//                    //System.out.println((result.get(word).size()));
+//                    for(Posting post: result.get(word)) {
+//                        br.write(post.getOccurence() + "," + post.getFileName()+ ";");
+//                    }
+//                    br.write("\n");
+//                }
+//            }
+//            br.close();
+//        }
         
         /*********** Another Saving Method **********/
         // 2. ========== Save as HashMap ========
